@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creative Library</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f5f5f4;
+  --color-background-tertiary: #f8f8f8;
+  --color-text-primary: #1c1b19;
+  --color-text-secondary: #5f5e5a;
+  --color-text-tertiary: #9c9b97;
+  --color-border-tertiary: #e5e4e0;
+  --color-border-secondary: #ccc;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+body { font-family: var(--font-sans); background: var(--color-background-tertiary); min-height: 100vh; }
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+
+/* HERO */
+.hero {
+  background: #fff;
+  border-bottom: 1px solid var(--color-border-tertiary);
+  padding: 48px 32px 40px;
+  text-align: center;
+}
+.hero-title {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 800;
+  font-size: 72px;
+  line-height: 1;
+  letter-spacing: -2px;
+  color: #111;
+}
+
+/* TOOLBAR / FILTER BAR */
+.btn-add { background: #111; border: none; color: #fff; border-radius: 999px; padding: 8px 20px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s; font-family: var(--font-sans); }
+.btn-add:hover { background: #333; }
+.layout { display: flex; flex: 1; min-height: calc(100vh - 56px); }
+
+/* SIDEBAR */
+.sidebar { width: 210px; min-width: 210px; background: var(--color-background-primary); border-right: 0.5px solid var(--color-border-tertiary); padding: 0 0 20px; overflow-y: auto; position: sticky; top: 0; height: 100vh; }
+.sidebar-label { font-size: 15px; font-weight: 800; color: #444; letter-spacing: 0.01em; padding: 13px 20px; display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; justify-content: space-between; }
+.sidebar-label-inner { display: flex; align-items: center; gap: 8px; }
+.sidebar-label-chevron { font-size: 12px; color: #999; transition: transform 0.2s; }
+.sidebar-label.open .sidebar-label-chevron { transform: rotate(90deg); }
+.sidebar-label-date     { background: #f0f0f0; }
+.sidebar-label-industry { background: #f0f0f0; }
+.sidebar-label-brand    { background: #f0f0f0; }
+.sidebar-section-body { overflow: hidden; max-height: 0; transition: max-height 0.28s ease; }
+.sidebar-section-body.open { max-height: 800px; }
+.sidebar-divider { height: 0.5px; background: var(--color-border-tertiary); margin: 0; }
+.sidebar-item { display: flex; align-items: center; gap: 8px; padding: 7px 20px; font-size: 13px; color: var(--color-text-secondary); cursor: pointer; position: relative; transition: background 0.12s; }
+.sidebar-item:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.sidebar-item.active { background: #f2f2f2; color: #111; font-weight: 700; border-left: 2.5px solid #111; }
+
+/* month accordion entries */
+.month-header { display: flex; align-items: center; gap: 8px; padding: 7px 20px; font-size: 13px; color: var(--color-text-secondary); cursor: pointer; position: relative; transition: background 0.12s; }
+.month-header::before { content: ''; width: 10px; height: 10px; border-radius: 50%; background: #111; flex-shrink: 0; }
+.month-header:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.month-header.active { background: #f2f2f2; color: #111; font-weight: 700; border-left: 2.5px solid #111; }
+.chevron { font-size: 11px; color: var(--color-text-tertiary); transition: transform 0.2s; flex-shrink: 0; margin-left: auto; }
+.month-header.open .chevron { transform: rotate(90deg); }
+.sub-list { overflow: hidden; max-height: 0; transition: max-height 0.25s ease; }
+.sub-list.open { max-height: 600px; }
+.sub-item { display: flex; align-items: center; gap: 6px; padding: 5px 20px 5px 36px; font-size: 12px; color: var(--color-text-tertiary); cursor: pointer; transition: background 0.12s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sub-item:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.sub-item.active { color: #111; font-weight: 600; background: #f0f0f0; }
+.sub-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.client-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 20px 6px 36px; font-size: 12px; color: var(--color-text-secondary); cursor: pointer; transition: background 0.12s; position: relative; }
+.client-item:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.client-item.active { color: #111; font-weight: 600; background: #f0f0f0; }
+.client-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2.5px; background: #111; border-radius: 0 2px 2px 0; }
+.client-chevron { font-size: 10px; color: var(--color-text-tertiary); transition: transform 0.2s; flex-shrink: 0; }
+.client-item.open .client-chevron { transform: rotate(90deg); }
+.name-list { overflow: hidden; max-height: 0; transition: max-height 0.2s ease; }
+.name-list.open { max-height: 400px; }
+.name-item { display: flex; align-items: center; gap: 6px; padding: 5px 20px 5px 50px; font-size: 12px; color: var(--color-text-tertiary); cursor: pointer; transition: background 0.12s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.name-item:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.name-item.active { color: #111; font-weight: 600; background: #efefef; }
+
+/* 업종 항목 */
+.industry-item { display: flex; align-items: center; gap: 8px; padding: 7px 20px; font-size: 13px; color: var(--color-text-secondary); cursor: pointer; transition: background 0.12s; position: relative; }
+.industry-item::before { content: ''; width: 10px; height: 10px; border-radius: 50%; background: #111; flex-shrink: 0; }
+.industry-item:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.industry-item.active { background: #f2f2f2; color: #111; font-weight: 700; border-left: 2.5px solid #111; }
+
+/* 브랜드(클라이언트) 항목 */
+.brand-item { display: flex; align-items: center; gap: 8px; padding: 7px 20px; font-size: 13px; color: var(--color-text-secondary); cursor: pointer; transition: background 0.12s; position: relative; }
+.brand-item::before { content: ''; width: 10px; height: 10px; border-radius: 50%; background: #111; flex-shrink: 0; }
+.brand-item:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.brand-item.active { background: #f2f2f2; color: #111; font-weight: 700; border-left: 2.5px solid #111; }
+
+.main { flex: 1; overflow-y: auto; }
+
+/* TOOLBAR */
+.toolbar { background: var(--color-background-primary); border-bottom: 0.5px solid var(--color-border-tertiary); padding: 12px 24px; display: flex; align-items: center; gap: 14px; }
+.type-btn { padding: 7px 22px; border: 1.5px solid #111; border-radius: 999px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; background: #fff; color: #111; font-family: var(--font-sans); }
+.type-btn:hover { background: #f5f5f5; }
+.type-btn.active { background: #111; color: #fff; border-color: #111; }
+.toolbar-divider { width: 0.5px; height: 20px; background: var(--color-border-tertiary); flex-shrink: 0; margin: 0 4px; }
+.search-wrap { flex: 1; position: relative; }
+.search-wrap i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--color-text-tertiary); font-size: 16px; }
+.search-wrap input { width: 100%; padding: 7px 12px 7px 34px; font-size: 13px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: var(--color-background-secondary); color: var(--color-text-primary); outline: none; }
+.search-wrap input:focus { border-color: #185FA5; background: var(--color-background-primary); }
+.content { padding: 16px 24px 24px; }
+
+.section-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 14px; }
+.section-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); }
+.gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; cursor: pointer; transition: border-color 0.15s, transform 0.15s; }
+.card:hover { border-color: var(--color-border-secondary); transform: translateY(-2px); }
+.card-thumb { width: 100%; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+.card-thumb img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+.type-tag { position: absolute; top: 8px; left: 8px; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 999px; z-index: 2; }
+.type-bidding { background: #111; color: #fff; }
+.type-task { background: #555; color: #fff; }
+.card-actions { position: absolute; top: 8px; right: 8px; display: none; gap: 4px; z-index: 2; }
+.card:hover .card-actions { display: flex; }
+.card-action-btn { width: 28px; height: 28px; border-radius: 6px; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; color: var(--color-text-secondary); }
+.card-action-btn:hover { color: var(--color-text-primary); }
+.card-body { padding: 14px; }
+.card-name { font-size: 25px; font-weight: 700; color: var(--color-text-primary); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-meta { font-size: 13px; color: var(--color-text-tertiary); display: flex; align-items: center; gap: 5px; }
+.card-footer { border-top: 0.5px solid var(--color-border-tertiary); margin-top: 10px; padding-top: 8px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.card-date { font-size: 12px; color: var(--color-text-tertiary); display: flex; align-items: center; gap: 4px; }
+.card-size { display: flex; gap: 4px; }
+.size-tag { font-size: 12px; padding: 2px 8px; border: 0.5px solid var(--color-border-tertiary); border-radius: 4px; color: var(--color-text-tertiary); }
+.thumb-bg-1{background:#E6F1FB;}.thumb-bg-2{background:#E1F5EE;}.thumb-bg-3{background:#FAEEDA;}
+.thumb-bg-4{background:#EEEDFE;}.thumb-bg-5{background:#FAECE7;}.thumb-bg-6{background:#FBEAF0;}
+.badge-bidding{background:#FAC775;color:#633806;}.badge-active{background:#9FE1CB;color:#085041;}
+.badge-done{background:#D3D1C7;color:#444441;}.badge-draft{background:#CECBF6;color:#3C3489;}
+.loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.85); z-index: 300; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; font-size: 14px; color: var(--color-text-secondary); }
+.spinner { width: 32px; height: 32px; border: 3px solid var(--color-border-tertiary); border-top-color: #185FA5; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1c1b19; color: #fff; padding: 10px 20px; border-radius: var(--border-radius-md); font-size: 13px; z-index: 400; opacity: 0; transition: opacity 0.2s; pointer-events: none; white-space: nowrap; }
+.toast.show { opacity: 1; }
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--color-background-primary); border-radius: var(--border-radius-lg); width: 520px; max-width: 92vw; border: 0.5px solid var(--color-border-tertiary); max-height: 90vh; overflow-y: auto; }
+.modal-header { padding: 20px 24px 0; display: flex; align-items: center; justify-content: space-between; }
+.modal-title { font-size: 16px; font-weight: 500; color: var(--color-text-primary); }
+.modal-close { width: 28px; height: 28px; border-radius: var(--border-radius-md); background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary); font-size: 16px; }
+.modal-close:hover { background: var(--color-background-secondary); }
+.modal-body { padding: 20px 24px 24px; }
+.form-group { margin-bottom: 14px; }
+.form-label { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 5px; display: block; font-weight: 500; }
+.form-hint { font-size: 11px; color: var(--color-text-tertiary); margin-top: 5px; }
+.form-input, .form-select { width: 100%; padding: 8px 12px; font-size: 13px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: var(--color-background-secondary); color: var(--color-text-primary); outline: none; }
+.form-input:focus, .form-select:focus { border-color: #185FA5; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+.btn-cancel { padding: 8px 16px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: none; cursor: pointer; font-size: 13px; color: var(--color-text-secondary); }
+.btn-cancel:hover { background: var(--color-background-secondary); }
+.btn-submit { padding: 8px 16px; background: #185FA5; color: #fff; border: none; border-radius: var(--border-radius-md); font-size: 13px; font-weight: 500; cursor: pointer; }
+.btn-submit:hover { background: #0C447C; }
+.img-preview-box { width: 100%; aspect-ratio: 1/1; border-radius: var(--border-radius-md); overflow: hidden; background: var(--color-background-secondary); margin-top: 8px; display: none; position: relative; border: 0.5px solid var(--color-border-tertiary); }
+.img-preview-box img { width: 100%; height: 100%; object-fit: cover; }
+.img-preview-box .no-img { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: var(--color-text-tertiary); font-size: 12px; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.slider-wrap { width:100%; aspect-ratio:1/1; border-radius:var(--border-radius-md); overflow:hidden; position:relative; margin-bottom:20px; background:var(--color-background-secondary); }
+.slider-wrap img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; transition:opacity 0.2s; }
+.slider-btn { position:absolute; top:50%; transform:translateY(-50%); width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.15); backdrop-filter:blur(12px) saturate(180%); -webkit-backdrop-filter:blur(12px) saturate(180%); border:1px solid rgba(255,255,255,0.3); box-shadow:0 2px 8px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:3; font-size:16px; color:#fff; transition:all 0.15s; }
+.slider-btn:hover { background:rgba(255,255,255,0.28); }
+.slider-prev { left:8px; }
+.slider-next { right:8px; }
+.slider-dots { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); display:flex; gap:5px; z-index:3; }
+.slider-dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.6); cursor:pointer; transition:background 0.15s; }
+.slider-dot.active { background:#fff; }
+.img-input-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.play-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; z-index:2; background:rgba(0,0,0,0.08); }
+.play-btn { width:64px; height:64px; border-radius:50%; background:rgba(255,255,255,0.12); backdrop-filter:blur(12px) saturate(180%); -webkit-backdrop-filter:blur(12px) saturate(180%); border:1px solid rgba(255,255,255,0.25); box-shadow:0 4px 24px rgba(0,0,0,0.12); display:flex; align-items:center; justify-content:center; font-size:28px; color:#292929; transition:all 0.2s; }
+.video-wrap { width:100%; aspect-ratio:1/1; border-radius:var(--border-radius-md); overflow:hidden; margin-bottom:20px; background:#000; }
+.video-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:500; align-items:center; justify-content:center; flex-direction:column; gap:16px; }
+.img-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:500; align-items:center; justify-content:center; flex-direction:column; gap:16px; }
+.img-modal-overlay.open { display:flex; }
+.img-modal-inner { width:min(90vw,800px); aspect-ratio:1/1; border-radius:var(--border-radius-lg); overflow:hidden; position:relative; background:#000; }
+.img-modal-inner img { width:100%; height:100%; object-fit:contain; }
+.img-modal-close { color:#fff; font-size:28px; cursor:pointer; opacity:0.8; align-self:flex-end; margin-right:calc((100vw - min(90vw,800px))/2); }
+.img-modal-close:hover { opacity:1; }
+.img-modal-btn { position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,0.15); backdrop-filter:blur(12px) saturate(180%); -webkit-backdrop-filter:blur(12px) saturate(180%); border:1px solid rgba(255,255,255,0.3); box-shadow:0 2px 8px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:20px; color:#fff; z-index:3; transition:all 0.15s; }
+.img-modal-btn:hover { background:rgba(255,255,255,0.28); }
+.img-modal-prev { left:10px; }
+.img-modal-next { right:10px; }
+.img-modal-dots { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); display:flex; gap:6px; z-index:3; }
+.img-modal-dot { width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,0.5); cursor:pointer; }
+.img-modal-dot.active { background:#fff; }
+.video-modal-overlay.open { display:flex; }
+.video-modal-inner { width:min(90vw, 800px); aspect-ratio:1/1; background:#000; border-radius:var(--border-radius-lg); overflow:hidden; position:relative; }
+.video-modal-inner iframe { width:100%; height:100%; border:none; }
+.video-modal-close { color:#fff; font-size:28px; cursor:pointer; opacity:0.8; align-self:flex-end; margin-right:calc((100vw - min(90vw,800px))/2); }
+.video-modal-close:hover { opacity:1; }
+.video-wrap iframe { width:100%; height:100%; border:none; }
+.img-input-row input { flex:1; }
+.img-del-btn { width:30px; height:30px; flex-shrink:0; border-radius:var(--border-radius-md); background:none; border:0.5px solid var(--color-border-tertiary); cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--color-text-tertiary); font-size:14px; }
+.img-del-btn:hover { color:#e53e3e; border-color:#e53e3e; }
+.detail-field label { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 3px; display: block; }
+.detail-field p { font-size: 13px; color: var(--color-text-primary); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="loading-overlay" id="loading"><div class="spinner"></div>불러오는 중...</div>
+<div class="toast" id="toast"></div>
+
+<div class="app">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-title">CREATIVE LIBRARY</div>
+  </div>
+
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+      <!-- 월별 (날짜) -->
+      <div class="sidebar-label sidebar-label-date open" onclick="toggleSection('section-date', this)">
+        <span class="sidebar-label-inner">월별</span>
+        <i class="ti ti-chevron-right sidebar-label-chevron"></i>
+      </div>
+      <div class="sidebar-section-body open" id="section-date">
+        <div id="month-list"></div>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <!-- 업종 -->
+      <div class="sidebar-label sidebar-label-industry open" onclick="toggleSection('section-industry', this)">
+        <span class="sidebar-label-inner">업종</span>
+        <i class="ti ti-chevron-right sidebar-label-chevron"></i>
+      </div>
+      <div class="sidebar-section-body open" id="section-industry">
+        <div id="industry-list">
+          <div class="industry-item" onclick="setIndustry('beauty', this)">뷰티</div>
+          <div class="industry-item" onclick="setIndustry('fnb', this)">F&amp;B</div>
+          <div class="industry-item" onclick="setIndustry('ecommerce', this)">이커머스</div>
+          <div class="industry-item" onclick="setIndustry('game', this)">게임</div>
+          <div class="industry-item" onclick="setIndustry('tech', this)">테크</div>
+          <div class="industry-item" onclick="setIndustry('edu', this)">교육</div>
+          <div class="industry-item" onclick="setIndustry('finance', this)">금융</div>
+          <div class="industry-item" onclick="setIndustry('fashion', this)">패션</div>
+        </div>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <!-- 브랜드 -->
+      <div class="sidebar-label sidebar-label-brand open" onclick="toggleSection('section-brand', this)">
+        <span class="sidebar-label-inner">브랜드</span>
+        <i class="ti ti-chevron-right sidebar-label-chevron"></i>
+      </div>
+      <div class="sidebar-section-body open" id="section-brand">
+        <div id="brand-list"></div>
+      </div>
+
+    </div>
+    <div class="main">
+      <div class="toolbar">
+        <button class="type-btn active" onclick="setType('all',this)">전체</button>
+        <button class="type-btn" onclick="setType('bidding',this)">비딩</button>
+        <button class="type-btn" onclick="setType('task',this)">과제</button>
+        <div class="toolbar-divider"></div>
+        <div class="search-wrap">
+          <i class="ti ti-search"></i>
+          <input type="text" placeholder="검색어를 입력해주세요." id="search-input" oninput="renderGallery()">
+        </div>
+        <button class="btn-add" onclick="openAddModal()" style="margin-left:8px;flex-shrink:0">+ 소재 추가</button>
+      </div>
+      <div class="content">
+        <div class="section-header">
+          <span class="section-title" id="section-title">전체 소재</span>
+          <span class="section-title" id="result-count" style="color:var(--color-text-tertiary)"></span>
+        </div>
+        <div id="gallery" class="gallery-grid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 소재 추가 모달 -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">새 소재 추가</span>
+      <button class="modal-close" onclick="closeModal('add-modal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">소재 링크 * <span style="font-weight:400;color:var(--color-text-tertiary)">(여러 개는 줄바꿈으로 구분)</span></label>
+        <textarea class="form-input" id="new-img-textarea" rows="5" style="resize:vertical;line-height:1.6;font-size:12px;" placeholder="링크를 붙여넣어 주세요. 여러 개는 줄바꿈으로 구분돼요."></textarea>
+        <p class="form-hint" style="margin-top:5px;">💡 이미지/영상 링크 모두 가능해요. 여러 줄 붙여넣으면 자동으로 캐러셀로 등록돼요!</p>
+      </div>
+      <div class="form-group"><label class="form-label">소재명 *</label><input type="text" class="form-input" id="new-name" placeholder="예: 여름 프로모션 배너 A"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">클라이언트 *</label><input type="text" class="form-input" id="new-client" placeholder="클라이언트명"></div>
+        <div class="form-group"><label class="form-label">구분</label><select class="form-select" id="new-type"><option value="bidding">비딩</option><option value="task">과제</option></select></div>
+      </div>
+      <div class="form-group"><label class="form-label">업종</label><select class="form-select" id="new-industry"><option value="">선택 안함</option><option value="beauty">뷰티</option><option value="fnb">F&amp;B</option><option value="ecommerce">이커머스</option><option value="game">게임</option><option value="tech">테크</option><option value="edu">교육</option><option value="finance">금융</option><option value="fashion">패션</option></select></div>
+      <div class="form-group"><label class="form-label">제작 월</label><input type="month" class="form-input" id="new-date"></div>
+      <div class="form-group"><label class="form-label">소재 사이즈</label><input type="text" class="form-input" id="new-sizes" placeholder="예: 300×250, 728×90" value="1440×1440"></div>
+      <div class="form-actions">
+        <button class="btn-cancel" onclick="closeModal('add-modal')">취소</button>
+        <button class="btn-submit" onclick="addCreative()">추가하기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 상세 모달 -->
+<div class="modal-overlay" id="detail-modal">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title" id="detail-title">소재 상세</span><button class="modal-close" onclick="closeModal('detail-modal')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body" id="detail-body"></div>
+  </div>
+</div>
+
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbxmmsi0RGRFqKZGngLqaF_fGo68URRd5PR1rZ4D-3FLk6oHCvGb8qSRV_FUjDkej4o8/exec';
+const statusColors = {'비딩중':'badge-bidding','진행중':'badge-active','완료':'badge-done','초안':'badge-draft'};
+const bgColors = ['thumb-bg-1','thumb-bg-2','thumb-bg-3','thumb-bg-4','thumb-bg-5','thumb-bg-6'];
+const typeColors = {bidding:'#F5B93E', task:'#6BBFA3'};
+let creatives=[], currentType='all', currentMonth='all', currentCreativeId=null, openMonths=new Set(), openClients=new Set(), nextId=Date.now();
+let currentIndustry='all', currentBrand='all';
+
+const INDUSTRY_MAP = {
+  beauty:'뷰티', fnb:'F&B', ecommerce:'이커머스',
+  game:'게임', tech:'테크', edu:'교육', finance:'금융', fashion:'패션'
+};
+const INDUSTRY_EMOJI = {
+  beauty:'💄', fnb:'🍽️', ecommerce:'🛍️',
+  game:'🎮', tech:'💻', edu:'📚', finance:'💰', fashion:'👗'
+};
+
+function showLoading(v){ document.getElementById('loading').style.display=v?'flex':'none'; }
+function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+function formatDate(d){ if(!d)return ''; const[y,m]=String(d).split('-'); return `${y}년 ${parseInt(m)}월`; }
+
+/* Google Drive URL 자동 변환 */
+/* 멀티 이미지 입력 */
+let imgInputCount = 0;
+function addImgInput(type='image') {
+  const wrap = document.getElementById('img-inputs');
+  const idx = imgInputCount++;
+  const isVideo = type === 'video';
+  const row = document.createElement('div');
+  row.className = 'img-input-row';
+  row.id = 'img-row-' + idx;
+  row.dataset.type = type;
+  row.innerHTML = `
+    <span style="font-size:13px;flex-shrink:0;color:var(--color-text-tertiary);width:20px;text-align:center">
+      <i class="ti ${isVideo ? 'ti-video' : 'ti-photo'}"></i>
+    </span>
+    <input type="url" class="form-input" placeholder="${isVideo ? '영상 링크 (Drive·유튜브)' : '이미지 링크 (Drive)'}" id="img-input-${idx}" data-media-type="${type}">
+    <button type="button" class="img-del-btn" onclick="removeImgInput(${idx})"><i class="ti ti-x"></i></button>`;
+  wrap.appendChild(row);
+}
+function removeImgInput(idx) {
+  const el = document.getElementById('img-row-' + idx);
+  if(el) el.remove();
+}
+function getImgUrls() {
+  const inputs = document.querySelectorAll('#img-inputs input');
+  return Array.from(inputs).map(i => {
+    const url = i.value.trim();
+    if (!url) return null;
+    const isVid = i.dataset.mediaType === 'video';
+    // 영상은 'video:URL' 형태로 저장해서 타입 구분
+    return isVid ? 'video:' + url : convertToDirectUrl(url);
+  }).filter(Boolean);
+}
+function clearImgInputs() {
+  document.getElementById('img-inputs').innerHTML = '';
+  imgInputCount = 0;
+  addImgInput('image'); // 기본 1개
+}
+
+/* 슬라이더 */
+let sliderIdx = 0;
+let sliderImgs = [];
+function openSlider(imgs, startIdx=0) {
+  sliderImgs = imgs;
+  sliderIdx = startIdx;
+  renderSlider();
+}
+function renderSlider() {
+  const wrap = document.getElementById('detail-slider');
+  if(!wrap) return;
+  const url = getRealUrl(sliderImgs[sliderIdx] || '');
+  const dots = sliderImgs.map((_, i) => `<div class="slider-dot ${i===sliderIdx?'active':''}" onclick="goSlide(${i})"></div>`).join('');
+  const showBtns = sliderImgs.length > 1;
+  const isVid = isVideoUrl(url);
+  let mediaHtml = '';
+  if (!isVid) {
+    mediaHtml = `<img src="${url}" alt="소재 이미지" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;cursor:zoom-in" onclick="openImgModal(${JSON.stringify(sliderImgs.filter(u=>!isVideoUrl(u)))}, 0)" onerror="this.style.opacity='0.3'">`;
+  } else if (isVid) {
+    const thumb = getVideoDriveThumb(getRealUrl(url));
+    mediaHtml = `
+      <div style="position:absolute;inset:0;cursor:pointer;" onclick="openVideoModal('${sliderImgs[sliderIdx]}')">
+        ${thumb ? `<img src="${thumb}" style="width:100%;height:100%;object-fit:cover;">` : ''}
+        <div class="play-overlay"><div class="play-btn" style="width:60px;height:60px;font-size:26px"><i class="ti ti-player-play-filled"></i></div></div>
+      </div>
+    `;
+  }
+  wrap.innerHTML = `
+    ${mediaHtml}
+    ${showBtns ? `<div class="slider-btn slider-prev" onclick="goSlide(${sliderIdx-1})" style="${isVid?'z-index:10':''}"><i class="ti ti-chevron-left"></i></div>` : ''}
+    ${showBtns ? `<div class="slider-btn slider-next" onclick="goSlide(${sliderIdx+1})" style="${isVid?'z-index:10':''}"><i class="ti ti-chevron-right"></i></div>` : ''}
+    ${showBtns ? `<div class="slider-dots">${dots}</div>` : ''}
+  `;
+}
+function goSlide(idx) {
+  sliderIdx = (idx + sliderImgs.length) % sliderImgs.length;
+  renderSlider();
+}
+
+function convertToDirectUrl(url) {
+  if (!url) return '';
+  const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (match) return `https://lh3.googleusercontent.com/d/${match[1]}`;
+  if (url.includes('drive.google.com/uc')) return url;
+  if (url.includes('googleusercontent.com')) return url;
+  return url;
+}
+
+
+/* URL 타입 감지 */
+function getUrlType(url) {
+  if (!url) return 'unknown';
+  const videoExts = /\.(mp4|mov|avi|webm|mkv|m4v)(\?|$)/i;
+  const imgExts = /\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?|$)/i;
+  if (url.includes('youtube.com/watch') || url.includes('youtu.be/')) return 'youtube';
+  if (url.includes('drive.google.com') && videoExts.test(url)) return 'video';
+  if (url.includes('drive.google.com') && imgExts.test(url)) return 'image';
+  if (videoExts.test(url)) return 'video';
+  if (imgExts.test(url)) return 'image';
+  // Drive 링크는 기본 이미지로 (확장자 없는 경우)
+  if (url.includes('drive.google.com') || url.includes('googleusercontent.com')) return 'image';
+  return 'image';
+}
+
+function getVideoEmbedUrl(url) {
+  // 유튜브
+  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+  if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
+  // Google Drive 영상
+  const driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (driveMatch) return `https://drive.google.com/file/d/${driveMatch[1]}/preview`;
+  return url;
+}
+
+function getVideoDriveThumb(url) {
+  const driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (driveMatch) return `https://lh3.googleusercontent.com/d/${driveMatch[1]}`;
+  if (url.includes('googleusercontent.com')) return url;
+  return '';
+}
+
+function isVideoUrl(url) {
+  if (!url) return false;
+  if (url.startsWith('video:')) return true;
+  return getUrlType(url) === 'video' || getUrlType(url) === 'youtube';
+}
+
+function getRealUrl(url) {
+  // video: 접두어 제거 후 실제 URL 반환
+  if (url && url.startsWith('video:')) return url.slice(6);
+  return url;
+}
+
+async function apiGet(){
+  showLoading(true);
+  try {
+    const res = await fetch(API);
+    const data = await res.json();
+    creatives = data.map(c=>{
+      const sizes = Array.isArray(c.sizes) ? c.sizes : String(c.sizes||'').split(',').filter(Boolean);
+      let imgs = [];
+      if (Array.isArray(c.imgs) && c.imgs.length) {
+        imgs = c.imgs;
+      } else if (typeof c.imgs === 'string' && c.imgs) {
+        imgs = c.imgs.split('|').filter(Boolean);
+      } else if (c.img) {
+        imgs = [c.img];
+      }
+      return {...c, sizes, imgs};
+    });
+    if(creatives.length) nextId = Math.max(...creatives.map(c=>Number(c.id)||0))+1;
+  } catch(e){ showToast('데이터를 불러오지 못했어요'); }
+  showLoading(false);
+}
+
+async function apiPost(payload){
+  try { await fetch(API,{method:'POST',body:JSON.stringify(payload)}); }
+  catch(e){ showToast('저장 실패'); }
+}
+
+function getFiltered(){
+  const q=document.getElementById('search-input').value.toLowerCase();
+  return creatives.filter(c=>
+    (currentType==='all'||c.type===currentType)&&
+    (currentMonth==='all'||c.date===currentMonth)&&
+    (currentCreativeId===null||String(c.id)===String(currentCreativeId))&&
+    (currentIndustry==='all'||c.industry===currentIndustry)&&
+    (currentBrand==='all'||c.client===currentBrand)&&
+    (!q||c.name.toLowerCase().includes(q)||c.client.toLowerCase().includes(q))
+  );
+}
+function getUniqueMonths(){ return[...new Set(creatives.map(c=>c.date).filter(Boolean))].sort((a,b)=>String(b).localeCompare(String(a))); }
+
+function renderSidebar(){
+  document.getElementById('month-list').innerHTML=getUniqueMonths().map(m=>{
+    const[y,mo]=String(m).split('-');
+    const mc=creatives.filter(c=>c.date===m&&(currentType==='all'||c.type===currentType));
+    const isOpen=openMonths.has(m),isActive=currentMonth===m&&currentCreativeId===null;
+    return `
+      <div class="month-header ${isActive?'active':''} ${isOpen?'open':''}" onclick="toggleMonth('${m}')">
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${y}년 ${parseInt(mo)}월</span>
+        <i class="ti ti-chevron-right chevron"></i>
+      </div>
+      <div class="sub-list ${isOpen?'open':''}">
+        ${(() => {
+          const clientMap = {};
+          mc.forEach(c => {
+            if (!clientMap[c.client]) clientMap[c.client] = [];
+            clientMap[c.client].push(c);
+          });
+          return Object.entries(clientMap).map(([client, items]) => {
+            const clientKey = m + ':' + client;
+            const isClientOpen = openClients.has(clientKey);
+            const isClientActive = items.some(c => String(c.id) === String(currentCreativeId));
+            return `
+              <div class="client-item ${isClientActive?'active':''} ${isClientOpen?'open':''}" onclick="toggleClient('${clientKey}', event)">
+                <span style="display:flex;align-items:center;gap:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                  <span class="sub-dot" style="background:${typeColors[items[0].type]};flex-shrink:0"></span>
+                  <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${client}</span>
+                </span>
+                <i class="ti ti-chevron-right client-chevron"></i>
+              </div>
+              <div class="name-list ${isClientOpen?'open':''}">
+                ${items.map(c => `<div class="name-item ${String(currentCreativeId)===String(c.id)?'active':''}" onclick="selectCreative('${m}',${c.id},event)">${c.name}</div>`).join('')}
+              </div>`;
+          }).join('');
+        })()}
+      </div>`;
+  }).join('');
+
+  // 브랜드 목록 (배지 없이, 전체 항목 없이)
+  const totalFiltered = creatives.filter(c=>currentType==='all'||c.type===currentType);
+  const brands = [...new Set(totalFiltered.map(c=>c.client).filter(Boolean))].sort();
+  const brandList = document.getElementById('brand-list');
+  if(brandList){
+    brandList.innerHTML = brands.map(b=>
+      `<div class="brand-item ${currentBrand===b?'active':''}" onclick="setBrand('${b}',this)"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${b}</span></div>`
+    ).join('');
+  }
+}
+
+function thumbHtml(c){
+  const imgs = c.imgs && c.imgs.length ? c.imgs : (c.img ? [c.img] : []);
+  const firstUrl = getRealUrl(imgs[0] || '');
+  const hasVideo = imgs.some(u => isVideoUrl(u));
+  const allVideo = imgs.length > 0 && imgs.every(u => isVideoUrl(u));
+
+  if (firstUrl) {
+    // 영상 전용이면 Drive 썸네일 or 어두운 배경 + 재생아이콘
+    if (allVideo) {
+      const thumb = getVideoDriveThumb(getRealUrl(firstUrl));
+      return `
+        ${thumb ? `<img src="${thumb}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" onerror="this.style.display='none'">` : ''}
+        <div class="play-overlay"><div class="play-btn"><i class="ti ti-player-play-filled"></i></div></div>
+        ${imgs.length > 1 ? `<span style="position:absolute;bottom:8px;right:8px;background:rgba(255,255,255,0.15);backdrop-filter:blur(12px) saturate(180%);-webkit-backdrop-filter:blur(12px) saturate(180%);border:1px solid rgba(255,255,255,0.3);color:#fff;font-size:13px;font-weight:400;padding:4px 10px;border-radius:999px;z-index:3;box-shadow:0 2px 8px rgba(0,0,0,0.1)">${imgs.length}개</span>` : ''}
+      `;
+    }
+    // 이미지 (캐러셀 포함)
+    return `
+      <img src="${firstUrl}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0" onerror="this.style.display='none'">
+      ${hasVideo ? '<div class="play-overlay"><div class="play-btn"><i class="ti ti-player-play-filled"></i></div></div>' : ''}
+      ${imgs.length > 1 ? `<span style="position:absolute;bottom:8px;right:8px;background:rgba(255,255,255,0.15);backdrop-filter:blur(12px) saturate(180%);-webkit-backdrop-filter:blur(12px) saturate(180%);border:1px solid rgba(255,255,255,0.3);color:#fff;font-size:13px;font-weight:400;padding:4px 10px;border-radius:999px;z-index:3;box-shadow:0 2px 8px rgba(0,0,0,0.1)">${imgs.length}장</span>` : ''}
+    `;
+  }
+  return `<span style="font-size:40px">${c.emoji||'🖼️'}</span>`;
+}
+
+function renderGallery(){
+  const items=getFiltered();
+  const g=document.getElementById('gallery');
+  document.getElementById('result-count').textContent=`${items.length}개`;
+  if(!items.length){g.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:60px 24px;color:var(--color-text-tertiary)"><i class="ti ti-mood-empty" style="font-size:40px;display:block;margin-bottom:12px"></i><p style="font-size:14px">소재가 없습니다</p></div>`;return;}
+  g.className='gallery-grid';g.style.cssText='';
+  g.innerHTML=items.map(c=>{
+    const imgs = c.imgs && c.imgs.length ? c.imgs : (c.img ? [c.img] : []);
+    const onlyImgs = imgs.filter(u => !isVideoUrl(u));
+    const onlyVids = imgs.filter(u => isVideoUrl(u));
+    const allVideo = imgs.length > 0 && onlyVids.length === imgs.length;
+    let clickHandler;
+    if (onlyVids.length > 0 && onlyImgs.length === 0) {
+      clickHandler = `handleCardClick(${c.id})`;
+    } else if (onlyImgs.length > 0 && onlyVids.length === 0) {
+      clickHandler = `handleCardClick(${c.id})`;
+    } else if (imgs.length === 0) {
+      clickHandler = `openDetail(${c.id})`;
+    } else {
+      clickHandler = `handleCardClick(${c.id})`;
+    }
+    return `
+    <div class="card" onclick="${clickHandler}">
+      <div class="card-thumb ${c.img?'':c.bg||'thumb-bg-1'}">
+        ${thumbHtml(c)}
+        <div class="card-actions">
+          <div class="card-action-btn" onclick="event.stopPropagation();openEditModal(${c.id})" title="수정"><i class="ti ti-pencil"></i></div>
+          <div class="card-action-btn" onclick="event.stopPropagation();deleteCreative(${c.id})" title="삭제"><i class="ti ti-trash"></i></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div style="margin-bottom:5px;">
+          <span style="display:flex;align-items:center;gap:5px;font-size:13px;color:var(--color-text-tertiary)"><i class="ti ti-building" style="font-size:12px"></i>${c.client}</span>
+        </div>
+        <div class="card-name">${c.name}</div>
+        <div class="card-footer">
+          <span class="type-tag ${c.type==='bidding'?'type-bidding':'type-task'}" style="position:static;font-size:10px;padding:3px 9px;border-radius:999px;font-weight:700">${c.type==='bidding'?'비딩':'과제'}</span>
+          ${c.industry ? `<span style="font-size:10px;padding:3px 9px;border-radius:999px;font-weight:700;background:#f0f0f0;color:#333;">${INDUSTRY_MAP[c.industry]||c.industry}</span>` : ''}
+        </div>
+      </div>
+    </div>`;}).join('');
+}
+
+function toggleSection(sectionId, labelEl) {
+  const body = document.getElementById(sectionId);
+  if (!body) return;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  labelEl.classList.toggle('open', !isOpen);
+  // 라벨 클릭 시 해당 섹션 필터 초기화
+  if (sectionId === 'section-date') { currentMonth='all'; currentCreativeId=null; openMonths.clear(); openClients.clear(); renderSidebar(); renderGallery(); }
+  if (sectionId === 'section-industry') { currentIndustry='all'; document.querySelectorAll('.industry-item').forEach(b=>b.classList.remove('active')); renderGallery(); }
+  if (sectionId === 'section-brand') { currentBrand='all'; renderSidebar(); renderGallery(); }
+}
+
+function selectAll(el){currentMonth='all';currentCreativeId=null;openMonths.clear();openClients.clear();
+  document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  updateSectionTitle();renderSidebar();renderGallery();}
+function setIndustry(ind, el){
+  if(currentIndustry === ind){ currentIndustry='all'; document.querySelectorAll('.industry-item').forEach(b=>b.classList.remove('active')); }
+  else { currentIndustry=ind; document.querySelectorAll('.industry-item').forEach(b=>b.classList.remove('active')); if(el) el.classList.add('active'); }
+  renderGallery();
+}
+function setBrand(brand, el){
+  if(currentBrand === brand){ currentBrand='all'; document.querySelectorAll('.brand-item').forEach(b=>b.classList.remove('active')); renderSidebar(); }
+  else { currentBrand=brand; document.querySelectorAll('.brand-item').forEach(b=>b.classList.remove('active')); if(el) el.classList.add('active'); }
+  renderGallery();
+}
+function toggleClient(key, e) {
+  e.stopPropagation();
+  if (openClients.has(key)) {
+    openClients.delete(key);
+  } else {
+    openClients.add(key);
+  }
+  renderSidebar();
+}
+
+function toggleMonth(m){if(openMonths.has(m)){openMonths.delete(m);currentMonth='all';currentCreativeId=null;openClients.clear();}else{openMonths.clear();openMonths.add(m);currentMonth=m;currentCreativeId=null;openClients.clear();}updateSectionTitle();renderSidebar();renderGallery();}
+function selectCreative(m,id,e){e.stopPropagation();currentCreativeId=String(currentCreativeId)===String(id)?null:id;currentMonth=m;openMonths.add(m);updateSectionTitle();renderSidebar();renderGallery();}
+function setType(type,el){currentType=type;document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');updateSectionTitle();renderSidebar();renderGallery();}
+function updateSectionTitle(){const t=currentType==='all'?'전체':currentType==='bidding'?'비딩':'과제';if(currentCreativeId!==null){const c=creatives.find(c=>String(c.id)===String(currentCreativeId));document.getElementById('section-title').textContent=c?c.name:'';}else document.getElementById('section-title').textContent=t+' 소재'+(currentMonth==='all'?'':' · '+formatDate(currentMonth));}
+
+async function cycleStatus(id){
+  const order=['초안','비딩중','진행중','완료'];
+  const c=creatives.find(c=>String(c.id)===String(id));if(!c)return;
+  c.status=order[(order.indexOf(c.status)+1)%order.length];
+  renderSidebar();renderGallery();
+  await apiPost({action:'update',id:String(id),status:c.status});
+  showToast('상태가 변경됐어요');
+}
+
+async function deleteCreative(id){
+  if(!confirm('소재를 삭제할까요?'))return;
+  creatives=creatives.filter(c=>String(c.id)!==String(id));
+  renderSidebar();renderGallery();
+  await apiPost({action:'delete',id:String(id)});
+  showToast('삭제됐어요');
+}
+
+function openDetail(id){
+  const c=creatives.find(c=>String(c.id)===String(id));if(!c)return;
+  document.getElementById('detail-title').textContent=c.name;
+  document.getElementById('detail-body').innerHTML=`
+    <div class="slider-wrap" id="detail-slider"></div>
+    <div class="detail-grid">
+      <div class="detail-field"><label>구분</label><p><span class="type-tag ${c.type==='bidding'?'type-bidding':'type-task'}" style="position:static;display:inline-block;font-size:12px;padding:4px 10px;border-radius:10px">${c.type==='bidding'?'비딩':'과제'}</span></p></div>
+      <div class="detail-field"><label>상태</label><p><span class="${statusColors[c.status]}" style="font-size:12px;font-weight:500;padding:4px 10px;border-radius:10px;display:inline-block">${c.status}</span></p></div>
+      <div class="detail-field"><label>클라이언트</label><p>${c.client}</p></div>
+      <div class="detail-field"><label>프로젝트</label><p>${c.project||'-'}</p></div>
+      <div class="detail-field"><label>제작 월</label><p>${formatDate(c.date)}</p></div>
+    </div>
+    <div class="detail-field"><label>소재 사이즈</label><div class="card-size" style="margin-top:6px">${(Array.isArray(c.sizes)?c.sizes:[]).map(s=>`<span class="size-tag">${s}</span>`).join('')}</div></div>
+    <div class="form-actions" style="margin-top:16px">
+      <button class="btn-cancel" onclick="cycleStatus(${c.id});closeModal('detail-modal')">상태 변경</button>
+      <button class="btn-submit" onclick="closeModal('detail-modal')">닫기</button>
+    </div>`;
+  document.getElementById('detail-modal').classList.add('open');
+  const imgs = c.imgs && c.imgs.length ? c.imgs : (c.img ? [c.img] : []);
+  openSlider(imgs, 0);
+}
+
+function openAddModal(){
+  document.getElementById('new-date').value=new Date().toISOString().slice(0,7);
+  ['new-name','new-client'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('new-img-textarea').value='';
+  document.getElementById('new-sizes').value='1440×1440';
+  const indEl=document.getElementById('new-industry'); if(indEl) indEl.value='';
+  const folderEl=document.getElementById('new-folder-url'); if(folderEl) folderEl.value='';
+  document.getElementById('add-modal').classList.add('open');
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+/* 수정 모달 */
+let editImgInputCount = 0;
+let editingId = null;
+
+function addEditImgInput(type='image', value='') {
+  const wrap = document.getElementById('edit-img-inputs');
+  const idx = editImgInputCount++;
+  const isVideo = type === 'video';
+  const row = document.createElement('div');
+  row.className = 'img-input-row';
+  row.id = 'edit-img-row-' + idx;
+  row.dataset.type = type;
+  row.innerHTML = `
+    <span style="font-size:13px;flex-shrink:0;color:var(--color-text-tertiary);width:20px;text-align:center">
+      <i class="ti ${isVideo ? 'ti-video' : 'ti-photo'}"></i>
+    </span>
+    <input type="url" class="form-input" placeholder="${isVideo ? '영상 링크 (Drive·유튜브)' : '이미지 링크 (Drive)'}" id="edit-img-input-${idx}" data-media-type="${type}" value="${value}">
+    <button type="button" class="img-del-btn" onclick="removeEditImgInput(${idx})"><i class="ti ti-x"></i></button>`;
+  wrap.appendChild(row);
+}
+
+function removeEditImgInput(idx) {
+  const el = document.getElementById('edit-img-row-' + idx);
+  if(el) el.remove();
+}
+
+function getEditImgUrls() {
+  const inputs = document.querySelectorAll('#edit-img-inputs input');
+  return Array.from(inputs).map(i => {
+    const url = i.value.trim();
+    if (!url) return null;
+    const isVid = i.dataset.mediaType === 'video';
+    return isVid ? 'video:' + url : convertToDirectUrl(url);
+  }).filter(Boolean);
+}
+
+function openEditModal(id) {
+  const c = creatives.find(c => String(c.id) === String(id));
+  if (!c) return;
+  editingId = id;
+  editImgInputCount = 0;
+
+  // 기존 이미지 목록 초기화
+  const imgs = c.imgs && c.imgs.length ? c.imgs : (c.img ? [c.img] : []);
+  document.getElementById('edit-img-textarea').value = imgs.map(u => getRealUrl(u)).join('\n');
+
+  document.getElementById('edit-name').value = c.name || '';
+  document.getElementById('edit-client').value = c.client || '';
+  document.getElementById('edit-type').value = c.type || 'bidding';
+  const editIndEl = document.getElementById('edit-industry');
+  if(editIndEl) editIndEl.value = c.industry || '';
+  document.getElementById('edit-date').value = c.date || '';
+  document.getElementById('edit-sizes').value = Array.isArray(c.sizes) ? c.sizes.join(', ') : c.sizes || '';
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+async function saveEdit() {
+  const name = document.getElementById('edit-name').value.trim();
+  const client = document.getElementById('edit-client').value.trim();
+  if (!name || !client) { showToast('소재명과 클라이언트를 입력해주세요'); return; }
+
+  const editImgRaw = document.getElementById('edit-img-textarea').value.trim();
+  const imgs = editImgRaw.split(/[\n,]+/).map(u=>u.trim()).filter(Boolean).map(u=>{
+    const isVid = u.includes('youtu') || u.match(/\.(mp4|mov|webm)$/i) || u.startsWith('video:');
+    return isVid ? 'video:' + getRealUrl(u) : convertToDirectUrl(u);
+  });
+  const type = document.getElementById('edit-type').value;
+  const industry = document.getElementById('edit-industry')?document.getElementById('edit-industry').value:'';
+  const date = document.getElementById('edit-date').value;
+  const sizesRaw = document.getElementById('edit-sizes').value.trim();
+  const sizes = sizesRaw ? sizesRaw.split(',').map(s => s.trim()) : ['1440×1440'];
+
+  const idx = creatives.findIndex(c => String(c.id) === String(editingId));
+  if (idx === -1) return;
+
+  creatives[idx] = { ...creatives[idx], name, client, type, industry, date, sizes, imgs, img: imgs[0] || '' };
+
+  closeModal('edit-modal');
+  renderSidebar(); renderGallery();
+
+  await apiPost({ action: 'update_all', id: String(editingId), data: { ...creatives[idx], sizes: sizes.join(','), imgs: imgs.join('|') } });
+  showToast('수정됐어요 ✅');
+}
+
+/* 카드 클릭 핸들러 */
+function handleCardClick(id) {
+  const c = creatives.find(c => String(c.id) === String(id));
+  if (!c) return;
+  const imgs = c.imgs && c.imgs.length ? c.imgs : (c.img ? [c.img] : []);
+  const onlyImgs = imgs.filter(u => !isVideoUrl(u));
+  const onlyVids = imgs.filter(u => isVideoUrl(u));
+
+  if (onlyVids.length > 0 && onlyImgs.length === 0) {
+    // 영상만
+    openVideoModal(onlyVids[0]);
+  } else if (onlyImgs.length > 0 && onlyVids.length === 0) {
+    // 이미지만 (단일 or 캐러셀)
+    openImgModal(onlyImgs, 0);
+  } else {
+    // 혼합
+    openDetail(id);
+  }
+}
+
+/* 이미지 확대 모달 */
+let imgModalImgs = [];
+let imgModalIdx = 0;
+
+function openImgModal(imgs, startIdx=0) {
+  imgModalImgs = imgs;
+  imgModalIdx = startIdx;
+  document.getElementById('img-modal').classList.add('open');
+  renderImgModal();
+}
+
+function renderImgModal() {
+  const url = imgModalImgs[imgModalIdx] || '';
+  const showBtns = imgModalImgs.length > 1;
+  const dots = imgModalImgs.map((_,i) =>
+    `<div class="img-modal-dot ${i===imgModalIdx?'active':''}" onclick="goImgModal(${i})"></div>`
+  ).join('');
+  document.getElementById('img-modal-inner').innerHTML = `
+    <img src="${url}" alt="소재 이미지" style="width:100%;height:100%;object-fit:contain">
+    ${showBtns ? `<button class="img-modal-btn img-modal-prev" onclick="goImgModal(${imgModalIdx-1})"><i class="ti ti-chevron-left"></i></button>` : ''}
+    ${showBtns ? `<button class="img-modal-btn img-modal-next" onclick="goImgModal(${imgModalIdx+1})"><i class="ti ti-chevron-right"></i></button>` : ''}
+    ${showBtns ? `<div class="img-modal-dots">${dots}</div>` : ''}
+  `;
+}
+
+function goImgModal(idx) {
+  imgModalIdx = (idx + imgModalImgs.length) % imgModalImgs.length;
+  renderImgModal();
+}
+
+function closeImgModal(e) {
+  if(e.target === document.getElementById('img-modal')) closeImgModalDirect();
+}
+function closeImgModalDirect() {
+  document.getElementById('img-modal').classList.remove('open');
+  document.getElementById('img-modal-inner').innerHTML = '';
+}
+
+function openVideoModal(url) {
+  const realUrl = getRealUrl(url);
+  const embedUrl = getVideoEmbedUrl(realUrl);
+  document.getElementById('video-modal-inner').innerHTML = `<iframe src="${embedUrl}" allowfullscreen allow="autoplay"></iframe>`;
+  document.getElementById('video-modal').classList.add('open');
+}
+function closeVideoModal(e) {
+  if(e.target === document.getElementById('video-modal')) closeVideoModalDirect();
+}
+function closeVideoModalDirect() {
+  document.getElementById('video-modal').classList.remove('open');
+  document.getElementById('video-modal-inner').innerHTML = '';
+}
+
+async function addCreative(){
+  const name=document.getElementById('new-name').value.trim();
+  const client=document.getElementById('new-client').value.trim();
+  const imgRaw = document.getElementById('new-img-textarea').value.trim();
+  if(!imgRaw){showToast('소재 링크를 입력해주세요');return;}
+  // 줄바꿈/쉼표로 분리 후 각각 변환
+  const imgs = imgRaw.split(/[\n,]+/).map(u=>u.trim()).filter(Boolean).map(u=>{
+    const isVid = u.includes('youtu') || u.match(/\.(mp4|mov|webm)$/i);
+    return isVid ? 'video:' + u : convertToDirectUrl(u);
+  });
+  if(!name||!client){showToast('소재명과 클라이언트를 입력해주세요');return;}
+  const type=document.getElementById('new-type').value;
+  const industry=document.getElementById('new-industry')?document.getElementById('new-industry').value:'';
+  const sizesRaw=document.getElementById('new-sizes').value.trim();
+  const date=document.getElementById('new-date').value||new Date().toISOString().slice(0,7);
+  const sizes=sizesRaw?sizesRaw.split(',').map(s=>s.trim()):['1440×1440'];
+  const bg=bgColors[nextId%bgColors.length];
+  const newItem={id:nextId++,name,client,project:'',type,industry,status:'초안',sizes,emoji:'🖼️',bg,date,img:imgs[0],imgs};
+  creatives.unshift(newItem);
+  closeModal('add-modal');renderSidebar();renderGallery();
+  await apiPost({action:'add',data:{...newItem,sizes:sizes.join(','),imgs:imgs.join('|')}});
+  showToast('소재가 추가됐어요 🎉');
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('add-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal('add-modal');});
+  document.getElementById('edit-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal('edit-modal');});
+  document.getElementById('detail-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal('detail-modal');});
+  apiGet().then(()=>{renderSidebar();renderGallery();});
+});
+</script>
+
+<!-- 소재 수정 모달 -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">소재 수정</span>
+      <button class="modal-close" onclick="closeModal('edit-modal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">소재 링크 <span style="font-weight:400;color:var(--color-text-tertiary)">(여러 개는 줄바꿈으로 구분)</span></label>
+        <textarea class="form-input" id="edit-img-textarea" rows="5" style="resize:vertical;line-height:1.6;font-size:12px;" placeholder="링크를 붙여넣어 주세요. 여러 개는 줄바꿈으로 구분돼요."></textarea>
+        <p class="form-hint" style="margin-top:5px;">💡 이미지/영상 링크 모두 가능해요. 여러 줄 붙여넣으면 자동으로 캐러셀로 등록돼요!</p>
+      </div>
+      <div class="form-group"><label class="form-label">소재명 *</label><input type="text" class="form-input" id="edit-name" placeholder="예: 여름 프로모션 배너 A"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">클라이언트 *</label><input type="text" class="form-input" id="edit-client" placeholder="클라이언트명"></div>
+        <div class="form-group"><label class="form-label">구분</label><select class="form-select" id="edit-type"><option value="bidding">비딩</option><option value="task">과제</option></select></div>
+      </div>
+      <div class="form-group"><label class="form-label">업종</label><select class="form-select" id="edit-industry"><option value="">선택 안함</option><option value="beauty">뷰티</option><option value="fnb">F&amp;B</option><option value="ecommerce">이커머스</option><option value="game">게임</option><option value="tech">테크</option><option value="edu">교육</option><option value="finance">금융</option><option value="fashion">패션</option></select></div>
+      <div class="form-group"><label class="form-label">제작 월</label><input type="month" class="form-input" id="edit-date"></div>
+      <div class="form-group"><label class="form-label">소재 사이즈</label><input type="text" class="form-input" id="edit-sizes" placeholder="예: 300×250, 728×90"></div>
+      <div class="form-actions">
+        <button class="btn-cancel" onclick="closeModal('edit-modal')">취소</button>
+        <button class="btn-submit" onclick="saveEdit()">저장하기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 이미지 확대 모달
+<!-- 이미지 확대 모달 -->
+<div class="img-modal-overlay" id="img-modal" onclick="closeImgModal(event)">
+  <div class="img-modal-close" onclick="closeImgModalDirect()"><i class="ti ti-x"></i></div>
+  <div class="img-modal-inner" id="img-modal-inner"></div>
+</div>
+
+<!-- 영상 재생 모달 -->
+<div class="video-modal-overlay" id="video-modal" onclick="closeVideoModal(event)">
+  <div class="video-modal-close" onclick="closeVideoModalDirect()"><i class="ti ti-x"></i></div>
+  <div class="video-modal-inner" id="video-modal-inner"></div>
+</div>
+</body>
+</html>
