@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creative Library</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f5f5f4;
+  --color-background-tertiary: #f8f8f8;
+  --color-text-primary: #1c1b19;
+  --color-text-secondary: #5f5e5a;
+  --color-text-tertiary: #9c9b97;
+  --color-border-tertiary: #e5e4e0;
+  --color-border-secondary: #ccc;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+body { font-family: var(--font-sans); background: var(--color-background-tertiary); min-height: 100vh; }
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+
+/* HERO */
+.hero {
+  background: #fff;
+  border-bottom: 1px solid var(--color-border-tertiary);
+  padding: 40px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.hero-left { display: flex; align-items: center; gap: 30px; }
+.hero-title {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: 0px;
+  color: #111;
+}
+.hero-stats { display: flex; gap: 24px; align-items: center; }
+.hero-stat { text-align: right; }
+.hero-stat-num { font-size: 28px; font-weight: 800; color: #111; line-height: 1; }
+.hero-stat-label { font-size: 11px; color: var(--color-text-tertiary); margin-top: 3px; }
+
+/* TOOLBAR / FILTER BAR */
+.toolbar-divider { width: 0.5px; height: 20px; background: var(--color-border-tertiary); flex-shrink: 0; margin: 0 4px; }
+.search-wrap { flex: 1; position: relative; }
+.search-wrap i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--color-text-tertiary); font-size: 16px; }
+.search-wrap input { width: 100%; padding: 7px 12px 7px 34px; font-size: 13px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: var(--color-background-secondary); color: var(--color-text-primary); outline: none; font-family: var(--font-sans); }
+.search-wrap input:focus { border-color: #185FA5; background: var(--color-background-primary); }
+.btn-add { background: #111; border: none; color: #fff; border-radius: 999px; padding: 8px 20px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s; font-family: var(--font-sans); }
+.btn-add:hover { background: #333; }
+.layout { display: flex; flex: 1; min-height: calc(100vh - 56px); }
+
+/* SIDEBAR */
+.sidebar { width: 210px; min-width: 210px; background: var(--color-background-primary); border-right: 0.5px solid var(--color-border-tertiary); padding: 0 0 20px; overflow-y: auto; position: sticky; top: 0; height: 100vh; }
+.sidebar-label { font-size: 15px; font-weight: 800; color: #fff; letter-spacing: 0.01em; padding: 13px 20px; display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; justify-content: space-between; background: #444444; }
+.sidebar-label-inner { display: flex; align-items: center; gap: 8px; }
+.sidebar-label-chevron { font-size: 12px; color: rgba(255,255,255,0.5); transition: transform 0.2s; }
+.sidebar-label.open .sidebar-label-chevron { transform: rotate(90deg); }
+
+.sidebar-section-body { overflow: hidden; max-height: 0; transition: max-height 0.28s ease; }
+.sidebar-section-body.open { max-height: 800px; }
+.sidebar-divider { height: 0.5px; background: var(--color-border-tertiary); margin: 0; }
+.sidebar-item { display: flex; align-items: center; gap: 8px; padding: 7px 20px; font-size: 13px; color: var(--color-text-secondary); cursor: pointer; position: relative; transition: background 0.12s; }
+.sidebar-item:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.sidebar-item.active { background: #f2f2f2; color: #111; font-weight: 700; border-left: 2.5px solid #111; }
+
+/* month accordion entries */
+.month-header { display: flex; align-items: center; gap: 8px; padding: 7px 20px; font-size: 13px; color: var(--color-text-secondary); cursor: pointer; position: relative; transition: background 0.12s; }
+.month-header:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.month-header.active { background: #f2f2f2; color: #111; font-weight: 700; border-left: 2.5px solid #111; }
+.chevron { font-size: 11px; color: var(--color-text-tertiary); transition: transform 0.2s; flex-shrink: 0; margin-left: auto; }
+.month-header.open .chevron { transform: rotate(90deg); }
+.sub-list { overflow: hidden; max-height: 0; transition: max-height 0.25s ease; }
+.sub-list.open { max-height: 600px; }
+.sub-item { display: flex; align-items: center; gap: 6px; padding: 5px 20px 5px 36px; font-size: 12px; color: var(--color-text-tertiary); cursor: pointer; transition: background 0.12s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sub-item:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.sub-item.active { color: #111; font-weight: 600; background: #f0f0f0; }
+.sub-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.client-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 20px 6px 36px; font-size: 12px; color: var(--color-text-secondary); cursor: pointer; transition: background 0.12s; position: relative; }
+.client-item:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.client-item.active { color: #111; font-weight: 600; background: #f0f0f0; }
+.client-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2.5px; background: #111; border-radius: 0 2px 2px 0; }
+.client-chevron { font-size: 10px; color: var(--color-text-tertiary); transition: transform 0.2s; flex-shrink: 0; }
+.client-item.open .client-chevron { transform: rotate(90deg); }
+.name-list { overflow: hidden; max-height: 0; transition: max-height 0.2s ease; }
+.name-list.open { max-height: 400px; }
+.name-item { display: flex; align-items: center; gap: 6px; padding: 5px 20px 5px 50px; font-size: 12px; color: var(--color-text-tertiary); cursor: pointer; transition: background 0.12s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.name-item:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.name-item.active { color: #111; font-weight: 600; background: #efefef; }
+
+/* 업종 항목 */
+.industry-item { display: flex; align-items: center; gap: 8px; padding: 7px 20px; font-size: 13px; color: var(--color-text-secondary); cursor: pointer; transition: background 0.12s; position: relative; }
+.industry-item:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.industry-item.active { background: #f2f2f2; color: #111; font-weight: 700; border-left: 2.5px solid #111; }
+
+/* 브랜드(클라이언트) 항목 */
+.brand-item { display: flex; align-items: center; gap: 8px; padding: 7px 20px; font-size: 13px; color: var(--color-text-secondary); cursor: pointer; transition: background 0.12s; position: relative; }
+.brand-item:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.brand-item.active { background: #f2f2f2; color: #111; font-weight: 700; border-left: 2.5px solid #111; }
+
+.main { flex: 1; overflow-y: auto; min-width: 0; }
+
+/* TOOLBAR */
+.toolbar { background: var(--color-background-primary); border-bottom: 0.5px solid var(--color-border-tertiary); padding: 12px 24px; display: flex; align-items: center; gap: 14px; position: sticky; top: 0; z-index: 10; }
+.type-btn { padding: 7px 22px; border: 1.5px solid #111; border-radius: 999px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; background: #fff; color: #111; font-family: var(--font-sans); }
+.type-btn:hover { background: #f5f5f5; }
+.type-btn.active { background: #111; color: #fff; border-color: #111; }
+.toolbar-divider { width: 0.5px; height: 20px; background: var(--color-border-tertiary); flex-shrink: 0; margin: 0 4px; }
+.search-wrap { flex: 1; position: relative; }
+.search-wrap i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--color-text-tertiary); font-size: 16px; }
+.search-wrap input { width: 100%; padding: 7px 12px 7px 34px; font-size: 13px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: var(--color-background-secondary); color: var(--color-text-primary); outline: none; }
+.search-wrap input:focus { border-color: #185FA5; background: var(--color-background-primary); }
+.content { padding: 16px 24px 24px; }
+
+.section-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 14px; }
+.section-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); }
+.gallery-grid { 
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  width: fit-content;
+}
+.masonry-col {
+  flex: 0 0 300px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; cursor: pointer; transition: border-color 0.15s, transform 0.15s; }
+.card:hover { border-color: var(--color-border-secondary); transform: translateY(-2px); }
+.card-thumb { width: 100%; display: block; position: relative; overflow: hidden; min-height: 80px; }
+.card-thumb img { width: 100%; height: auto; object-fit: cover; display: block; }
+.type-tag { position: absolute; top: 8px; left: 8px; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 999px; z-index: 2; }
+.type-bidding { background: #3E64FF; color: #fff; }
+.type-task { background: #FF8B3E; color: #fff; }
+.card-actions { position: absolute; top: 8px; right: 8px; display: none; gap: 4px; z-index: 2; }
+.card:hover .card-actions { display: flex; }
+.card-action-btn { width: 28px; height: 28px; border-radius: 6px; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; color: var(--color-text-secondary); }
+.card-action-btn:hover { color: var(--color-text-primary); }
+.card-body { padding: 14px; }
+.card-name { font-size: 20px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 6px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.card-meta { font-size: 13px; color: var(--color-text-tertiary); display: flex; align-items: center; gap: 5px; }
+.card-footer { border-top: 0.5px solid var(--color-border-tertiary); margin-top: 10px; padding-top: 8px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.card-date { font-size: 12px; color: var(--color-text-tertiary); display: flex; align-items: center; gap: 4px; }
+.keyword-badge { font-size: 11px; padding: 5px 12px; border-radius: 999px; }
+.card-size { display: flex; gap: 4px; }
+.size-tag { font-size: 12px; padding: 2px 8px; border: 0.5px solid var(--color-border-tertiary); border-radius: 4px; color: var(--color-text-tertiary); }
+.thumb-bg-1{background:#E6F1FB;}.thumb-bg-2{background:#E1F5EE;}.thumb-bg-3{background:#FAEEDA;}
+.thumb-bg-4{background:#EEEDFE;}.thumb-bg-5{background:#FAECE7;}.thumb-bg-6{background:#FBEAF0;}
+.badge-bidding{background:#FAC775;color:#633806;}.badge-active{background:#9FE1CB;color:#085041;}
+.badge-done{background:#D3D1C7;color:#444441;}.badge-draft{background:#CECBF6;color:#3C3489;}
+.loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.85); z-index: 300; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; font-size: 14px; color: var(--color-text-secondary); }
+.spinner { width: 32px; height: 32px; border: 3px solid var(--color-border-tertiary); border-top-color: #185FA5; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1c1b19; color: #fff; padding: 10px 20px; border-radius: var(--border-radius-md); font-size: 13px; z-index: 400; opacity: 0; transition: opacity 0.2s; pointer-events: none; white-space: nowrap; }
+.toast.show { opacity: 1; }
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--color-background-primary); border-radius: var(--border-radius-lg); width: 520px; max-width: 92vw; border: 0.5px solid var(--color-border-tertiary); max-height: 90vh; overflow-y: auto; }
+.modal-header { padding: 20px 24px 0; display: flex; align-items: center; justify-content: space-between; }
+.modal-title { font-size: 16px; font-weight: 500; color: var(--color-text-primary); }
+.modal-close { width: 28px; height: 28px; border-radius: var(--border-radius-md); background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary); font-size: 16px; }
+.modal-close:hover { background: var(--color-background-secondary); }
+.modal-body { padding: 20px 24px 24px; }
+.form-group { margin-bottom: 14px; }
+.form-label { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 5px; display: block; font-weight: 500; }
+.form-hint { font-size: 11px; color: var(--color-text-tertiary); margin-top: 5px; }
+.form-input, .form-select { width: 100%; padding: 8px 12px; font-size: 13px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: var(--color-background-secondary); color: var(--color-text-primary); outline: none; }
+.form-input:focus, .form-select:focus { border-color: #185FA5; }
+.form-select { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239c9b97' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+.btn-cancel { padding: 8px 16px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: none; cursor: pointer; font-size: 13px; color: var(--color-text-secondary); }
+.btn-cancel:hover { background: var(--color-background-secondary); }
+.btn-submit { padding: 8px 16px; background: #185FA5; color: #fff; border: none; border-radius: var(--border-radius-md); font-size: 13px; font-weight: 500; cursor: pointer; }
+.btn-submit:hover { background: #0C447C; }
+.img-preview-box { width: 100%; aspect-ratio: 1/1; border-radius: var(--border-radius-md); overflow: hidden; background: var(--color-background-secondary); margin-top: 8px; display: none; position: relative; border: 0.5px solid var(--color-border-tertiary); }
+.img-preview-box img { width: 100%; height: 100%; object-fit: cover; }
+.img-preview-box .no-img { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: var(--color-text-tertiary); font-size: 12px; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.slider-wrap { width:100%; border-radius:var(--border-radius-md); overflow:hidden; position:relative; margin-bottom:20px; background:var(--color-background-secondary); min-height:200px; }
+.slider-wrap img { width:100%; height:auto; display:block; object-fit:contain; transition:opacity 0.2s; }
+.slider-btn { position:absolute; top:50%; transform:translateY(-50%); width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.15); backdrop-filter:blur(12px) saturate(180%); -webkit-backdrop-filter:blur(12px) saturate(180%); border:1px solid rgba(255,255,255,0.3); box-shadow:0 2px 8px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:3; font-size:16px; color:#fff; transition:all 0.15s; }
+.slider-btn:hover { background:rgba(255,255,255,0.28); }
+.slider-prev { left:8px; }
+.slider-next { right:8px; }
+.slider-dots { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); display:flex; gap:5px; z-index:3; }
+.slider-dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.6); cursor:pointer; transition:background 0.15s; }
+.slider-dot.active { background:#fff; }
+.img-input-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.play-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; z-index:2; background:rgba(0,0,0,0.08); }
+.play-btn { width:64px; height:64px; border-radius:50%; background:rgba(255,255,255,0.12); backdrop-filter:blur(12px) saturate(180%); -webkit-backdrop-filter:blur(12px) saturate(180%); border:1px solid rgba(255,255,255,0.25); box-shadow:0 4px 24px rgba(0,0,0,0.12); display:flex; align-items:center; justify-content:center; font-size:28px; color:#292929; transition:all 0.2s; }
+.video-wrap { width:100%; aspect-ratio:1/1; border-radius:var(--border-radius-md); overflow:hidden; margin-bottom:20px; background:#000; }
+.video-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:500; align-items:center; justify-content:center; flex-direction:column; }
+.img-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:500; align-items:center; justify-content:center; flex-direction:column; gap:16px; }
+.img-modal-overlay.open { display:flex; }
+.img-modal-inner { width:min(90vw,800px); max-height:90vh; border-radius:var(--border-radius-lg); overflow:hidden; position:relative; background:#000; display:flex; align-items:center; justify-content:center; }
+.img-modal-inner img { max-width:100%; max-height:90vh; width:auto; height:auto; object-fit:contain; display:block; }
+.img-modal-close { color:#fff; font-size:28px; cursor:pointer; opacity:0.8; align-self:flex-end; }
+.img-modal-close:hover { opacity:1; }
+.img-modal-btn { position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,0.15); backdrop-filter:blur(12px) saturate(180%); -webkit-backdrop-filter:blur(12px) saturate(180%); border:1px solid rgba(255,255,255,0.3); box-shadow:0 2px 8px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:20px; color:#fff; z-index:3; transition:all 0.15s; }
+.img-modal-btn:hover { background:rgba(255,255,255,0.28); }
+.img-modal-prev { left:10px; }
+.img-modal-next { right:10px; }
+.img-modal-dots { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); display:flex; gap:6px; z-index:3; }
+.img-modal-dot { width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,0.5); cursor:pointer; }
+.img-modal-dot.active { background:#fff; }
+.video-modal-overlay.open { display:flex; }
+.video-modal-inner { max-width:min(90vw, 900px); max-height:90vh; background:#000; border-radius:var(--border-radius-lg); overflow:hidden; position:relative; display:flex; align-items:center; justify-content:center; }
+.video-modal-inner iframe { width:100%; height:100%; border:none; }
+.video-modal-close { color:#fff; font-size:28px; cursor:pointer; opacity:0.8; align-self:flex-end; margin-right:calc((100vw - min(90vw,800px))/2); }
+.video-modal-close:hover { opacity:1; }
+.video-wrap iframe { width:100%; height:100%; border:none; }
+.img-input-row input { flex:1; }
+.img-del-btn { width:30px; height:30px; flex-shrink:0; border-radius:var(--border-radius-md); background:none; border:0.5px solid var(--color-border-tertiary); cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--color-text-tertiary); font-size:14px; }
+.img-del-btn:hover { color:#e53e3e; border-color:#e53e3e; }
+.detail-field label { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 3px; display: block; }
+.detail-field p { font-size: 13px; color: var(--color-text-primary); font-weight: 500; }
+.keyword-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px; color: var(--color-text-tertiary); text-align: center; width: 100%; }
+.empty-state-icon { font-size: 48px; margin-bottom: 16px; }
+.empty-state-title { font-size: 16px; font-weight: 600; color: var(--color-text-secondary); margin-bottom: 8px; }
+.empty-state-desc { font-size: 13px; color: var(--color-text-tertiary); margin-bottom: 20px; }
+.empty-state-btn { padding: 10px 24px; background: #111; color: #fff; border: none; border-radius: 999px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: var(--font-sans); }
+.empty-state-btn:hover { background: #333; }
+.gallery-empty-wrap { grid-column: 1 / -1; display: flex; justify-content: center; }
+.keyword-chip { padding: 6px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); font-size: 12px; font-weight: 500; cursor: pointer; color: var(--color-text-secondary); background: var(--color-background-secondary); transition: all 0.15s; user-select: none; font-family: var(--font-sans); }
+.keyword-chip:hover { border-color: #111; color: #111; background: #fff; }
+.keyword-chip.selected { background: #111; color: #fff; border-color: #111; }
+.keyword-badge { display: inline-block; font-size: 11px; padding: 5px 12px; border-radius: 999px; font-weight: 500; background: #888; color: #fff; }
+</style>
+</head>
+<body>
+<div class="loading-overlay" id="loading"><div class="spinner"></div>불러오는 중...</div>
+<div class="toast" id="toast"></div>
+
+<div class="app">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-left">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAyAAAAESCAYAAAAFXbHnAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAylpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDkuMS1jMDAxIDc5LjE0NjI4OTk3NzcsIDIwMjMvMDYvMjUtMjM6NTc6MTQgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCAyNS4yIChNYWNpbnRvc2gpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjUzNEM0QjdCOUJCOTExRUU4NEU0QkYxRDgzOTIwN0REIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjUzNEM0QjdDOUJCOTExRUU4NEU0QkYxRDgzOTIwN0REIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6NDY0OTYwNEU5QkFFMTFFRTg0RTRCRjFEODM5MjA3REQiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6NTM0QzRCN0E5QkI5MTFFRTg0RTRCRjFEODM5MjA3REQiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7tzfVeAABEyklEQVR4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" alt="Wisebirds" style="height:40px;width:auto;display:block;">
+      <div class="hero-title">CREATIVE LIBRARY</div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-num" id="stat-total">—</div><div class="hero-stat-label">전체 소재</div></div>
+      <div class="hero-stat"><div class="hero-stat-num" id="stat-bidding">—</div><div class="hero-stat-label">비딩</div></div>
+      <div class="hero-stat"><div class="hero-stat-num" id="stat-task">—</div><div class="hero-stat-label">과제</div></div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+      <!-- 월별 (날짜) -->
+      <div class="sidebar-label sidebar-label-date open" onclick="toggleSection('section-date', this)">
+        <span class="sidebar-label-inner">연도</span>
+        <i class="ti ti-chevron-right sidebar-label-chevron"></i>
+      </div>
+      <div class="sidebar-section-body open" id="section-date">
+        <div id="month-list"></div>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <!-- 업종 -->
+      <div class="sidebar-label sidebar-label-industry open" onclick="toggleSection('section-industry', this)">
+        <span class="sidebar-label-inner">카테고리</span>
+        <i class="ti ti-chevron-right sidebar-label-chevron"></i>
+      </div>
+      <div class="sidebar-section-body open" id="section-industry">
+        <div id="industry-list">
+          <div class="industry-item" onclick="setIndustry('beauty', this)">💄 Beauty &amp; Luxury</div>
+          <div class="industry-item" onclick="setIndustry('fnb', this)">🍽️ F&amp;B</div>
+          <div class="industry-item" onclick="setIndustry('ecommerce', this)">🛍️ Ecommerce</div>
+          <div class="industry-item" onclick="setIndustry('game', this)">🎮 Gaming</div>
+          <div class="industry-item" onclick="setIndustry('telecom', this)">📡 Telecom</div>
+          <div class="industry-item" onclick="setIndustry('entmedia', this)">🎬 Ent. &amp; Media</div>
+          <div class="industry-item" onclick="setIndustry('tech', this)">💻 Technology</div>
+          <div class="industry-item" onclick="setIndustry('edu', this)">📚 Education</div>
+          <div class="industry-item" onclick="setIndustry('sports', this)">⚽ Sports</div>
+          <div class="industry-item" onclick="setIndustry('auto', this)">🚗 Automotive</div>
+          <div class="industry-item" onclick="setIndustry('health', this)">🏥 Health Care</div>
+          <div class="industry-item" onclick="setIndustry('travel', this)">✈️ Travel</div>
+          <div class="industry-item" onclick="setIndustry('retail', this)">🏪 Retail</div>
+          <div class="industry-item" onclick="setIndustry('org', this)">🏛️ Organizations</div>
+          <div class="industry-item" onclick="setIndustry('finance', this)">💰 Financial Services</div>
+          <div class="industry-item" onclick="setIndustry('service', this)">🔧 Service</div>
+        </div>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <!-- 브랜드 -->
+      <div class="sidebar-label sidebar-label-brand open" onclick="toggleSection('section-brand', this)">
+        <span class="sidebar-label-inner">클라이언트</span>
+        <i class="ti ti-chevron-right sidebar-label-chevron"></i>
+      </div>
+      <div class="sidebar-section-body open" id="section-brand">
+        <div id="brand-list"></div>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <!-- 소재유형 -->
+      <div class="sidebar-label sidebar-label-mediatype open" onclick="toggleSection('section-mediatype', this)">
+        <span class="sidebar-label-inner">소재유형</span>
+        <i class="ti ti-chevron-right sidebar-label-chevron"></i>
+      </div>
+      <div class="sidebar-section-body open" id="section-mediatype">
+        <div id="mediatype-list"></div>
+      </div>
+
+    </div>
+    <div class="main">
+      <div class="toolbar">
+        <button class="type-btn active" onclick="setType('all',this)">전체</button>
+        <button class="type-btn" onclick="setType('bidding',this)" style="border-color:#3E64FF;color:#3E64FF">비딩</button>
+        <button class="type-btn" onclick="setType('task',this)" style="border-color:#FF8B3E;color:#FF8B3E">과제</button>
+        <div class="toolbar-divider"></div>
+        <div class="search-wrap">
+          <i class="ti ti-search"></i>
+          <input type="text" placeholder="검색어를 입력해주세요." id="search-input" oninput="renderGallery()">
+        </div>
+        <button class="btn-add" onclick="openAddModal()" style="margin-left:8px;flex-shrink:0">+ 소재 추가</button>
+      </div>
+      <div class="content">
+        <div class="section-header">
+          <span class="section-title" id="section-title">전체 소재</span>
+          <span class="section-title" id="result-count" style="color:var(--color-text-tertiary)"></span>
+        </div>
+        <div id="gallery" class="gallery-grid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 소재 추가 모달 -->
+<div class="modal-overlay" id="add-modal" onclick="if(event.target===this)closeModal('add-modal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span class="modal-title">새 소재 추가</span>
+      <button class="modal-close" onclick="closeModal('add-modal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">🖼️ 이미지 링크 <span style="font-weight:400;color:var(--color-text-tertiary)">(여러 개는 줄바꿈으로 구분, 캐러셀 등록)</span></label>
+        <textarea class="form-input" id="new-img-textarea" rows="3" style="resize:vertical;line-height:1.6;font-size:12px;" placeholder="Google Drive 이미지 링크를 붙여넣어 주세요."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">🎬 영상·GIF 링크 <span style="font-weight:400;color:var(--color-text-tertiary)">(Drive 영상 또는 GIF 링크)</span></label>
+        <textarea class="form-input" id="new-vid-textarea" rows="2" style="resize:vertical;line-height:1.6;font-size:12px;" placeholder="Google Drive 영상/GIF 링크를 붙여넣어 주세요."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">클라이언트 *</label><input type="text" class="form-input" id="new-client" placeholder="클라이언트명"></div>
+        <div class="form-group"><label class="form-label">구분</label><select class="form-select" id="new-type"><option value="bidding">비딩</option><option value="task">과제</option></select></div>
+      </div>
+      <div class="form-group"><label class="form-label">소재명 *</label><input type="text" class="form-input" id="new-name" placeholder="예: 여름 프로모션 배너 A"></div>
+      <div class="form-group"><label class="form-label">카테고리</label><select class="form-select" id="new-industry"><option value="">선택 안함</option><option value="beauty">💄 Beauty &amp; Luxury</option><option value="fnb">🍽️ F&amp;B</option><option value="ecommerce">🛍️ Ecommerce</option><option value="game">🎮 Gaming</option><option value="telecom">📡 Telecom</option><option value="entmedia">🎬 Ent. &amp; Media</option><option value="tech">💻 Technology</option><option value="edu">📚 Education</option><option value="sports">⚽ Sports</option><option value="auto">🚗 Automotive</option><option value="health">🏥 Health Care</option><option value="travel">✈️ Travel</option><option value="retail">🏪 Retail</option><option value="org">🏛️ Organizations</option><option value="finance">💰 Financial Services</option><option value="service">🔧 Service</option></select></div>
+      <div class="form-group"><label class="form-label">제작 연/월</label><div style="display:flex;gap:8px;align-items:center;">
+          <select class="form-select" id="new-date-year" style="flex:1"><option value="2026">2026년</option><option value="2027">2027년</option><option value="2028">2028년</option><option value="2029">2029년</option><option value="2030">2030년</option><option value="2031">2031년</option><option value="2032">2032년</option><option value="2033">2033년</option><option value="2034">2034년</option><option value="2035">2035년</option><option value="2036">2036년</option><option value="2037">2037년</option><option value="2038">2038년</option><option value="2039">2039년</option><option value="2040">2040년</option><option value="2041">2041년</option><option value="2042">2042년</option><option value="2043">2043년</option><option value="2044">2044년</option><option value="2045">2045년</option><option value="2046">2046년</option><option value="2047">2047년</option><option value="2048">2048년</option><option value="2049">2049년</option><option value="2050">2050년</option></select>
+          <select class="form-select" id="new-date-month" style="flex:1"><option value="01">1월</option><option value="02">2월</option><option value="03">3월</option><option value="04">4월</option><option value="05">5월</option><option value="06">6월</option><option value="07">7월</option><option value="08">8월</option><option value="09">9월</option><option value="10">10월</option><option value="11">11월</option><option value="12">12월</option></select>
+        </div></div>
+      <div class="form-group">
+        <label class="form-label">키워드</label>
+        <div class="keyword-chips" id="new-keyword-chips">
+          
+          <button type="button" class="keyword-chip" onclick="event.stopPropagation();toggleKeyword(this)">쿠폰강조</button>
+          <button type="button" class="keyword-chip" onclick="event.stopPropagation();toggleKeyword(this)">모델/제품강조</button>
+          <button type="button" class="keyword-chip" onclick="event.stopPropagation();toggleKeyword(this)">타이포강조</button>
+          <button type="button" class="keyword-chip" onclick="event.stopPropagation();toggleKeyword(this)">할인/가격강조</button>
+          <button type="button" class="keyword-chip" onclick="event.stopPropagation();toggleKeyword(this)">리뷰강조</button>
+          <button type="button" class="keyword-chip" onclick="event.stopPropagation();toggleKeyword(this)">USP강조</button>
+          <button type="button" class="keyword-chip" onclick="event.stopPropagation();toggleKeyword(this)">AI활용</button>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-cancel" onclick="closeModal('add-modal')">취소</button>
+        <button class="btn-submit" onclick="addCreative()">추가하기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 상세 모달 -->
+<div class="modal-overlay" id="detail-modal" onclick="if(event.target===this)closeModal('detail-modal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header"><span class="modal-title" id="detail-title">소재 상세</span><button class="modal-close" onclick="closeModal('detail-modal')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body" id="detail-body"></div>
+  </div>
+</div>
+
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbxmmsi0RGRFqKZGngLqaF_fGo68URRd5PR1rZ4D-3FLk6oHCvGb8qSRV_FUjDkej4o8/exec';
+const statusColors = {'비딩중':'badge-bidding','진행중':'badge-active','완료':'badge-done','초안':'badge-draft'};
+const bgColors = ['thumb-bg-1','thumb-bg-2','thumb-bg-3','thumb-bg-4','thumb-bg-5','thumb-bg-6'];
+const typeColors = {bidding:'#F5B93E', task:'#6BBFA3'};
+let creatives=[], currentType='all', currentMonth='all', currentCreativeId=null, openMonths=new Set(), openClients=new Set(), nextId=Date.now();
+let currentIndustry='all', currentBrand='all', currentMediaType='all';
+
+const INDUSTRY_MAP = {
+  beauty:'Beauty & Luxury', fnb:'F&B', ecommerce:'Ecommerce',
+  game:'Gaming', telecom:'Telecom', entmedia:'Ent. & Media', tech:'Technology',
+  edu:'Education', sports:'Sports', auto:'Automotive', health:'Health Care',
+  travel:'Travel', retail:'Retail', org:'Organizations', finance:'Financial Services', service:'Service'
+};
+const INDUSTRY_EMOJI = {
+  beauty:'💄', fnb:'🍽️', ecommerce:'🛍️', game:'🎮',
+  telecom:'📡', entmedia:'🎬', tech:'💻', edu:'📚',
+  sports:'⚽', auto:'🚗', health:'🏥', travel:'✈️',
+  retail:'🏪', org:'🏛️', finance:'💰', service:'🔧'
+};
+
+
+function setThisMonth(prefix) {
+  const now = new Date();
+  const y = document.getElementById(prefix+'-date-year');
+  const m = document.getElementById(prefix+'-date-month');
+  if(y) y.value = String(now.getFullYear());
+  if(m) m.value = String(now.getMonth()+1).padStart(2,'0');
+}
+function showLoading(v){ document.getElementById('loading').style.display=v?'flex':'none'; }
+function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+function formatDate(d){ if(!d)return ''; const[y,m]=String(d).split('-'); return `${y}년 ${parseInt(m)}월`; }
+
+/* Google Drive URL 자동 변환 */
+/* 멀티 이미지 입력 */
+let imgInputCount = 0;
+function addImgInput(type='image') {
+  const wrap = document.getElementById('img-inputs');
+  const idx = imgInputCount++;
+  const isVideo = type === 'video';
+  const row = document.createElement('div');
+  row.className = 'img-input-row';
+  row.id = 'img-row-' + idx;
+  row.dataset.type = type;
+  row.innerHTML = `
+    <span style="font-size:13px;flex-shrink:0;color:var(--color-text-tertiary);width:20px;text-align:center">
+      <i class="ti ${isVideo ? 'ti-video' : 'ti-photo'}"></i>
+    </span>
+    <input type="url" class="form-input" placeholder="${isVideo ? '영상 링크 (Drive·유튜브)' : '이미지 링크 (Drive)'}" id="img-input-${idx}" data-media-type="${type}">
+    <button type="button" class="img-del-btn" onclick="removeImgInput(${idx})"><i class="ti ti-x"></i></button>`;
+  wrap.appendChild(row);
+}
+function removeImgInput(idx) {
+  const el = document.getElementById('img-row-' + idx);
+  if(el) el.remove();
+}
+function getImgUrls() {
+  const inputs = document.querySelectorAll('#img-inputs input');
+  return Array.from(inputs).map(i => {
+    const url = i.value.trim();
+    if (!url) return null;
+    const isVid = i.dataset.mediaType === 'video';
+    // 영상은 'video:URL' 형태로 저장해서 타입 구분
+    return isVid ? 'video:' + url : convertToDirectUrl(url);
+  }).filter(Boolean);
+}
+function clearImgInputs() {
+  document.getElementById('img-inputs').innerHTML = '';
+  imgInputCount = 0;
+  addImgInput('image'); // 기본 1개
+}
+
+/* 슬라이더 */
+let sliderIdx = 0;
+let sliderImgs = [];
+function openSlider(imgs, startIdx=0) {
+  sliderImgs = imgs;
+  sliderIdx = startIdx;
+  renderSlider();
+}
+function renderSlider() {
+  const wrap = document.getElementById('detail-slider');
+  if(!wrap) return;
+  const url = getRealUrl(sliderImgs[sliderIdx] || '');
+  const dots = sliderImgs.map((_, i) => `<div class="slider-dot ${i===sliderIdx?'active':''}" onclick="goSlide(${i})"></div>`).join('');
+  const showBtns = sliderImgs.length > 1;
+  const isVid = isVideoUrl(url);
+  // 영상이면 1:1 고정, 이미지면 자연 비율
+  wrap.style.aspectRatio = isVid ? '1/1' : '';
+  wrap.style.minHeight = isVid ? '' : '120px';
+  let mediaHtml = '';
+  if (!isVid) {
+    mediaHtml = `<img src="${url}" alt="소재 이미지" style="width:100%;height:auto;display:block;object-fit:contain;cursor:zoom-in;position:relative;z-index:1;" onclick="openImgModal(${JSON.stringify(sliderImgs.filter(u=>!isVideoUrl(u)))}, 0)" onerror="this.style.opacity='0.3'">`;
+  } else if (isVid) {
+    const thumb = getVideoDriveThumb(getRealUrl(url));
+    mediaHtml = `
+      <div style="position:absolute;inset:0;cursor:pointer;" onclick="openVideoModal('${sliderImgs[sliderIdx]}')">
+        ${thumb ? `<img src="${thumb}" style="width:100%;height:100%;object-fit:cover;">` : ''}
+        <div class="play-overlay"><div class="play-btn" style="width:60px;height:60px;font-size:26px"><i class="ti ti-player-play-filled"></i></div></div>
+      </div>
+    `;
+  }
+  wrap.innerHTML = `
+    ${mediaHtml}
+    ${showBtns ? `<div class="slider-btn slider-prev" onclick="goSlide(${sliderIdx-1})" style="${isVid?'z-index:10':''}"><i class="ti ti-chevron-left"></i></div>` : ''}
+    ${showBtns ? `<div class="slider-btn slider-next" onclick="goSlide(${sliderIdx+1})" style="${isVid?'z-index:10':''}"><i class="ti ti-chevron-right"></i></div>` : ''}
+    ${showBtns ? `<div class="slider-dots">${dots}</div>` : ''}
+  `;
+}
+function goSlide(idx) {
+  sliderIdx = (idx + sliderImgs.length) % sliderImgs.length;
+  renderSlider();
+}
+
+function convertGifUrl(url) {
+  if (!url) return '';
+  // Try to extract file ID from various Drive URL formats
+  const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (match) {
+    // Mark as gif: prefix so we can render with <img> (lh3 serves GIF with animation)
+    return 'gif:' + match[1];
+  }
+  const ucMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (ucMatch) return 'gif:' + ucMatch[1];
+  if (url.includes('googleusercontent.com')) return url;
+  // Direct gif URL
+  if (/\.gif(\?|$)/i.test(url)) return url;
+  return url;
+}
+
+function getGifSrc(fileId) {
+  // lh3 serves the actual file bytes including GIF animation
+  return `https://lh3.googleusercontent.com/d/${fileId}`;
+}
+
+function isGifUrl(url) {
+  if (!url) return false;
+  return url.startsWith('gif:') || /\.gif(\?|$)/i.test(url);
+}
+
+function resolveGifSrc(url) {
+  if (!url) return '';
+  if (url.startsWith('gif:')) return `https://lh3.googleusercontent.com/d/${url.slice(4)}`;
+  return url;
+}
+
+function convertToDirectUrl(url) {
+  if (!url) return '';
+  const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (match) {
+    const fileId = match[1];
+    // GIF: use uc?export=view to preserve animation
+    if (/\.gif(\?|$)/i.test(url)) {
+      return `https://drive.google.com/uc?export=view&id=${fileId}`;
+    }
+    return `https://lh3.googleusercontent.com/d/${fileId}`;
+  }
+  if (url.includes('drive.google.com/uc')) return url;
+  if (url.includes('googleusercontent.com')) return url;
+  return url;
+}
+
+
+/* URL 타입 감지 */
+function getUrlType(url) {
+  if (!url) return 'unknown';
+  if (url.startsWith('gif:')) return 'image';
+  const videoExts = /\.(mp4|mov|avi|webm|mkv|m4v)(\?|$)/i;
+  const imgExts = /\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?|$)/i;
+  if (url.includes('youtube.com/watch') || url.includes('youtu.be/')) return 'youtube';
+  if (url.includes('drive.google.com') && videoExts.test(url)) return 'video';
+  if (url.includes('drive.google.com') && imgExts.test(url)) return 'image';
+  if (videoExts.test(url)) return 'video';
+  if (imgExts.test(url)) return 'image';
+  // GIF via drive uc export
+  if (url.includes('drive.google.com/uc') && url.includes('gif')) return 'image';
+  // Drive 링크는 기본 이미지로 (확장자 없는 경우)
+  if (url.includes('drive.google.com') || url.includes('googleusercontent.com')) return 'image';
+  return 'image';
+}
+
+function getVideoEmbedUrl(url) {
+  // 유튜브
+  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+  if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
+  // Google Drive 영상
+  const driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (driveMatch) return `https://drive.google.com/file/d/${driveMatch[1]}/preview?autoplay=1`;
+  return url;
+}
+
+function getVideoDriveThumb(url) {
+  const driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (driveMatch) return `https://lh3.googleusercontent.com/d/${driveMatch[1]}`;
+  if (url.includes('googleusercontent.com')) return url;
+  return '';
+}
+
+function isVideoUrl(url) {
+  if (!url) return false;
+  if (url.startsWith('gif:')) return false;
+  if (url.startsWith('video:')) return true;
+  return getUrlType(url) === 'video' || getUrlType(url) === 'youtube';
+}
+
+function getRealUrl(url) {
+  if (!url) return '';
+  if (url.startsWith('video:')) return url.slice(6);
+  if (url.startsWith('gif:')) return `https://lh3.googleusercontent.com/d/${url.slice(4)}`;
+  return url;
+}
+
+async function apiGet(){
+  showLoading(true);
+  try {
+    const res = await fetch(API);
+    const data = await res.json();
+    creatives = data.map(c=>{
+      const sizes = Array.isArray(c.sizes) ? c.sizes : String(c.sizes||'').split(',').filter(Boolean);
+      let imgs = [];
+      if (Array.isArray(c.imgs) && c.imgs.length) {
+        imgs = c.imgs;
+      } else if (typeof c.imgs === 'string' && c.imgs) {
+        imgs = c.imgs.split('|').filter(Boolean);
+      } else if (c.img) {
+        imgs = [c.img];
+      }
+      let keywords=[];
+      if(Array.isArray(c.keywords)) keywords=c.keywords;
+      else if(typeof c.keywords==='string'&&c.keywords) keywords=c.keywords.split(',').map(k=>k.trim()).filter(Boolean);
+      return {...c, imgs, keywords};
+    });
+    if(creatives.length) nextId = Math.max(...creatives.map(c=>Number(c.id)||0))+1;
+  } catch(e){ showToast('데이터를 불러오지 못했어요'); }
+  showLoading(false);
+}
+
+async function apiPost(payload){
+  try { await fetch(API,{method:'POST',body:JSON.stringify(payload)}); }
+  catch(e){ showToast('저장 실패'); }
+}
+
+function getCreativeMediaType(c) {
+  const imgs = c.imgs && c.imgs.length ? c.imgs : (c.img ? [c.img] : []);
+  if (!imgs.length) return 'image';
+  const hasGif = imgs.some(u => isGifUrl(u));
+  const hasVideo = imgs.some(u => isVideoUrl(u));
+  if (hasVideo || hasGif) return 'video';
+  return 'image';
+}
+
+function getFiltered(){
+  const q=document.getElementById('search-input').value.toLowerCase();
+  return creatives.filter(c=>
+    (currentType==='all'||c.type===currentType)&&
+    (currentMonth==='all'||c.date===currentMonth)&&
+    (currentCreativeId===null||String(c.id)===String(currentCreativeId))&&
+    (currentIndustry==='all'||c.industry===currentIndustry)&&
+    (currentBrand==='all'||c.client===currentBrand)&&
+    (currentMediaType==='all'||getCreativeMediaType(c)===currentMediaType)&&
+    (!q||c.name.toLowerCase().includes(q)||c.client.toLowerCase().includes(q)||(c.keywords&&c.keywords.some(k=>k.toLowerCase().includes(q))))
+  );
+}
+function getUniqueMonths(){ return[...new Set(creatives.map(c=>c.date).filter(Boolean))].sort((a,b)=>String(b).localeCompare(String(a))); }
+
+function renderSidebar(){
+  document.getElementById('month-list').innerHTML=getUniqueMonths().map(m=>{
+    const[y,mo]=String(m).split('-');
+    const mc=creatives.filter(c=>c.date===m&&(currentType==='all'||c.type===currentType));
+    const isOpen=openMonths.has(m),isActive=currentMonth===m&&currentCreativeId===null;
+    return `
+      <div class="month-header ${isActive?'active':''} ${isOpen?'open':''}" onclick="toggleMonth('${m}')">
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${y}년 ${parseInt(mo)}월</span>
+        <i class="ti ti-chevron-right chevron"></i>
+      </div>
+      <div class="sub-list ${isOpen?'open':''}">
+        ${(() => {
+          const clientMap = {};
+          mc.forEach(c => {
+            if (!clientMap[c.client]) clientMap[c.client] = [];
+            clientMap[c.client].push(c);
+          });
+          return Object.entries(clientMap).map(([client, items]) => {
+            const clientKey = m + ':' + client;
+            const isClientOpen = openClients.has(clientKey);
+            const isClientActive = items.some(c => String(c.id) === String(currentCreativeId));
+            return `
+              <div class="client-item ${isClientActive?'active':''} ${isClientOpen?'open':''}" onclick="toggleClient('${clientKey}', event)">
+                <span style="display:flex;align-items:center;gap:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                  <span class="sub-dot" style="background:${typeColors[items[0].type]};flex-shrink:0"></span>
+                  <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${client}</span>
+                </span>
+                <i class="ti ti-chevron-right client-chevron"></i>
+              </div>
+              <div class="name-list ${isClientOpen?'open':''}">
+                ${items.map(c => `<div class="name-item ${String(currentCreativeId)===String(c.id)?'active':''}" onclick="selectCreative('${m}',${c.id},event)">${c.name}</div>`).join('')}
+              </div>`;
+          }).join('');
+        })()}
+      </div>`;
+  }).join('');
+
+  // 카테고리: 실제 소재가 있는 것만 표시
+  const allForIndustry = creatives.filter(c=>currentType==='all'||c.type===currentType);
+  const industryEmoji = {beauty:'💄',fnb:'🍽️',ecommerce:'🛍️',game:'🎮',telecom:'📡',entmedia:'🎬',tech:'💻',edu:'📚',sports:'⚽',auto:'🚗',health:'🏥',travel:'✈️',retail:'🏪',org:'🏛️',finance:'💰',service:'🔧'};
+  const usedIndustries = [...new Set(allForIndustry.map(c=>c.industry).filter(Boolean))];
+  const industryEl = document.getElementById('industry-list');
+  if(industryEl){
+    industryEl.innerHTML = usedIndustries.map(key=>
+      `<div class="industry-item ${currentIndustry===key?'active':''}" onclick="setIndustry('${key}',this)">
+        ${industryEmoji[key]||''} ${INDUSTRY_MAP[key]||key}
+      </div>`
+    ).join('');
+  }
+
+  // 브랜드 목록
+  const totalFiltered = creatives.filter(c=>currentType==='all'||c.type===currentType);
+  const brands = [...new Set(totalFiltered.map(c=>c.client).filter(Boolean))].sort();
+  const brandList = document.getElementById('brand-list');
+  if(brandList){
+    brandList.innerHTML = brands.map(b=>
+      `<div class="brand-item ${currentBrand===b?'active':''}" onclick="setBrand('${b}',this)"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${b}</span></div>`
+    ).join('');
+  }
+
+  const MEDIA_TYPES = [
+    { key: 'image', label: '이미지',   icon: 'ti-photo' },
+    { key: 'video', label: '영상/GIF', icon: 'ti-video' },
+  ];
+  const mediaList = document.getElementById('mediatype-list');
+  if (mediaList) {
+    const counts = { image: 0, video: 0 };
+    creatives.forEach(c => { const t = getCreativeMediaType(c); if (counts[t] !== undefined) counts[t]++; });
+    mediaList.innerHTML = MEDIA_TYPES.map(({key, label}) =>
+      `<div class="sidebar-item ${currentMediaType===key?'active':''}" onclick="setMediaTypeFilter('${key}',this)">
+        <span style="flex:1">${label}</span>
+      </div>`
+    ).join('');
+  }
+}
+
+function thumbHtml(c){
+  const imgs = c.imgs && c.imgs.length ? c.imgs : (c.img ? [c.img] : []);
+  if (!imgs.length) return `<span style="font-size:40px;display:block;padding:40px 0;text-align:center;">${c.emoji||'🖼️'}</span>`;
+
+  // 원본 URL(prefix 포함)로 타입 판별
+  const hasVideo = imgs.some(u => isVideoUrl(u));
+  const hasGif   = imgs.some(u => isGifUrl(u));
+  const allVideo = imgs.every(u => isVideoUrl(u));
+
+  const firstUrl = getRealUrl(imgs[0] || '');
+
+  // 영상만 있는 경우
+  if (allVideo) {
+    const thumb = getVideoDriveThumb(firstUrl);
+    return `
+      ${thumb ? `<img src="${thumb}" style="width:100%;height:auto;display:block;min-height:120px;object-fit:cover;" onerror="this.style.opacity='0.15'">` : `<div style="min-height:120px;background:#111;"></div>`}
+      <div class="play-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.08);"><div class="play-btn"><i class="ti ti-player-play-filled"></i></div></div>
+      ${imgs.length > 1 ? `<span style="position:absolute;bottom:8px;right:8px;background:rgba(255,255,255,0.15);backdrop-filter:blur(12px) saturate(180%);-webkit-backdrop-filter:blur(12px) saturate(180%);border:1px solid rgba(255,255,255,0.3);color:#fff;font-size:13px;font-weight:400;padding:4px 10px;border-radius:999px;z-index:3;box-shadow:0 2px 8px rgba(0,0,0,0.1)">${imgs.length}개</span>` : ''}
+    `;
+  }
+
+  // 이미지 or GIF (플레이버튼: 영상 포함 && GIF 아닐 때만)
+  return `
+    <img src="${firstUrl}" alt="${c.name}" style="width:100%;height:auto;display:block;object-fit:cover;" onerror="this.style.opacity='0.15'" onload="this.parentElement.style.minHeight=''">
+    ${(hasVideo && !hasGif) ? '<div class="play-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><div class="play-btn"><i class="ti ti-player-play-filled"></i></div></div>' : ''}
+    ${imgs.length > 1 ? `<span style="position:absolute;bottom:8px;right:8px;background:rgba(255,255,255,0.15);backdrop-filter:blur(12px) saturate(180%);-webkit-backdrop-filter:blur(12px) saturate(180%);border:1px solid rgba(255,255,255,0.3);color:#fff;font-size:13px;font-weight:400;padding:4px 10px;border-radius:999px;z-index:3;box-shadow:0 2px 8px rgba(0,0,0,0.1)">${imgs.length}장</span>` : ''}
+  `;
+}
+
+function resizeMasonryItem(item) {
+  const grid = document.getElementById('gallery');
+  if (!grid) return;
+  const rowGap = 0;
+  const rowHeight = 4;
+  const itemHeight = item.getBoundingClientRect().height + 12; // +12 for margin-bottom
+  const rowSpan = Math.ceil(itemHeight / (rowHeight + rowGap));
+  item.style.gridRowEnd = 'span ' + rowSpan;
+}
+
+function resizeAllMasonryItems() {
+  const grid = document.getElementById('gallery');
+  if (!grid || !grid.classList.contains('gallery-grid')) return;
+  Array.from(grid.children).forEach(item => resizeMasonryItem(item));
+}
+
+function _cardHtml(c) {
+    const imgs = c.imgs && c.imgs.length ? c.imgs : (c.img ? [c.img] : []);
+    let clickHandler = imgs.length === 0 ? `openDetail(${c.id})` : `handleCardClick(${c.id})`;
+    return `
+    <div class="card" onclick="${clickHandler}">
+      <div class="card-thumb ${c.img?'':c.bg||'thumb-bg-1'}">
+        ${thumbHtml(c)}
+        <div class="card-actions">
+          <div class="card-action-btn" onclick="event.stopPropagation();openEditModal(${c.id})" title="수정"><i class="ti ti-pencil"></i></div>
+          <div class="card-action-btn" onclick="event.stopPropagation();deleteCreative(${c.id})" title="삭제"><i class="ti ti-trash"></i></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div style="margin-bottom:5px;">
+          <span style="display:flex;align-items:center;gap:5px;font-size:13px;color:var(--color-text-tertiary)"><i class="ti ti-building" style="font-size:12px"></i>${c.client}</span>
+        </div>
+        <div class="card-name">${c.name}</div>
+        <div class="card-footer">
+          <span class="type-tag ${c.type==='bidding'?'type-bidding':'type-task'}" style="position:static;font-size:11px;padding:5px 12px;border-radius:999px;font-weight:500">${c.type==='bidding'?'비딩':'과제'}</span>
+          ${c.industry ? `<span style="font-size:11px;padding:5px 12px;border-radius:999px;font-weight:500;background:#f0f0f0;color:#333;">${{beauty:'💄',fnb:'🍽️',ecommerce:'🛍️',game:'🎮',telecom:'📡',entmedia:'🎬',tech:'💻',edu:'📚',sports:'⚽',auto:'🚗',health:'🏥',travel:'✈️',retail:'🏪',org:'🏛️',finance:'💰',service:'🔧'}[c.industry]||''} ${INDUSTRY_MAP[c.industry]||c.industry}</span>` : ''}
+          ${(c.keywords&&c.keywords.length)?c.keywords.map(k=>`<span class="keyword-badge">${k}</span>`).join(''):''}
+        </div>
+      </div>
+    </div>`;
+  }
+
+function renderGallery(){
+  const items=getFiltered();
+  const q=(document.getElementById('search-input')||{value:''}).value.trim();
+  const rcEl=document.getElementById('result-count');
+  if(rcEl) rcEl.textContent=items.length+'개';
+  const g=document.getElementById('gallery');
+  if(!items.length){
+    const isFiltered=currentType!=='all'||currentMonth!=='all'||currentIndustry!=='all'||currentBrand!=='all';
+    g.style.display='flex';g.style.justifyContent='center';g.className='';g.innerHTML=`<div class="empty-state"><div class="empty-state-icon"><i class="ti ti-photo-off"></i></div><div class="empty-state-title">${q?'검색 결과가 없어요':'소재가 없어요'}</div><div class="empty-state-desc">${q?`"${q}"에 해당하는 소재를 찾을 수 없어요.`:isFiltered?'필터 조건에 맞는 소재가 없어요.':'첫 번째 소재를 추가해보세요!'}</div>${!q&&!isFiltered?`<button class="empty-state-btn" onclick="openAddModal()">+ 소재 추가하기</button>`:''}</div>`;
+    return;
+  }
+  document.getElementById('result-count').textContent=`${items.length}개`;
+  if(!items.length){g.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:60px 24px;color:var(--color-text-tertiary)"><i class="ti ti-mood-empty" style="font-size:40px;display:block;margin-bottom:12px"></i><p style="font-size:14px">소재가 없습니다</p></div>`;return;}
+  const CARD_WIDTH = 300;
+  const GAP = 12;
+
+  function getNumCols() {
+    const main = document.querySelector('.main');
+    const available = (main ? main.clientWidth : window.innerWidth - 210) - 48;
+    return Math.max(1, Math.floor((available + GAP) / (CARD_WIDTH + GAP)));
+  }
+
+  function distributeToColumns(numCols) {
+    const cols = Array.from({length: numCols}, () => []);
+    items.forEach((c, i) => cols[i % numCols].push(c));
+    g.innerHTML = cols.map(col =>
+      `<div class="masonry-col">${col.map(c => _cardHtml(c)).join('')}</div>`
+    ).join('');
+  }
+
+  g.className='gallery-grid'; g.style.display=''; g.style.justifyContent='';
+  distributeToColumns(getNumCols());
+
+  // ResizeObserver: 이미 등록됐으면 재등록하지 않음
+  if (!window._galleryResizeObserver) {
+    window._galleryResizeObserver = new ResizeObserver(() => {
+      const newCols = getNumCols();
+      const curCols = g.querySelectorAll('.masonry-col').length;
+      if (newCols !== curCols) distributeToColumns(newCols);
+    });
+    window._galleryResizeObserver.observe(document.querySelector('.main') || g.parentElement);
+  }
+}
+
+function filterGallery() {
+  // 열 구조는 그대로 유지, 각 열의 카드만 교체
+  const items = getFiltered();
+  const g = document.getElementById('gallery');
+  const rcEl = document.getElementById('result-count');
+  if (rcEl) rcEl.textContent = items.length + '개';
+
+  const cols = g.querySelectorAll('.masonry-col');
+  if (!cols.length) { renderGallery(); return; } // 초기 렌더 전이면 풀 렌더
+
+  const numCols = cols.length;
+  const distributed = Array.from({length: numCols}, () => []);
+  items.forEach((c, i) => distributed[i % numCols].push(c));
+
+  if (!items.length) { renderGallery(); return; }
+
+  cols.forEach((col, i) => {
+    col.innerHTML = (distributed[i] || []).map(c => _cardHtml(c)).join('');
+  });
+}
+
+function toggleSection(sectionId, labelEl) {
+  const body = document.getElementById(sectionId);
+  if (!body) return;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  labelEl.classList.toggle('open', !isOpen);
+  // 라벨 클릭 시 해당 섹션 필터 초기화
+  if (sectionId === 'section-date') { currentMonth='all'; currentCreativeId=null; openMonths.clear(); openClients.clear(); renderSidebar(); renderGallery(); }
+  if (sectionId === 'section-industry') { currentIndustry='all'; document.querySelectorAll('.industry-item').forEach(b=>b.classList.remove('active')); renderGallery(); }
+  if (sectionId === 'section-brand') { currentBrand='all'; renderSidebar(); renderGallery(); }
+  if (sectionId === 'section-mediatype') { currentMediaType='all'; renderSidebar(); renderGallery(); }
+}
+
+function selectAll(el){currentMonth='all';currentCreativeId=null;openMonths.clear();openClients.clear();
+  document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  updateSectionTitle();renderSidebar();renderGallery();}
+function setIndustry(ind, el){
+  if(currentIndustry === ind){ currentIndustry='all'; document.querySelectorAll('.industry-item').forEach(b=>b.classList.remove('active')); }
+  else { currentIndustry=ind; document.querySelectorAll('.industry-item').forEach(b=>b.classList.remove('active')); if(el) el.classList.add('active'); }
+  renderGallery();
+}
+function setMediaTypeFilter(mt, el) {
+  if (currentMediaType === mt) { currentMediaType = 'all'; document.querySelectorAll('#mediatype-list .sidebar-item').forEach(b=>b.classList.remove('active')); }
+  else { currentMediaType = mt; document.querySelectorAll('#mediatype-list .sidebar-item').forEach(b=>b.classList.remove('active')); if(el) el.classList.add('active'); }
+  renderGallery();
+}
+function setBrand(brand, el){
+  if(currentBrand === brand){ currentBrand='all'; document.querySelectorAll('.brand-item').forEach(b=>b.classList.remove('active')); renderSidebar(); }
+  else { currentBrand=brand; document.querySelectorAll('.brand-item').forEach(b=>b.classList.remove('active')); if(el) el.classList.add('active'); }
+  renderGallery();
+}
+function toggleClient(key, e) {
+  e.stopPropagation();
+  if (openClients.has(key)) {
+    openClients.delete(key);
+  } else {
+    openClients.add(key);
+  }
+  renderSidebar();
+}
+
+function toggleMonth(m){ setMonth(m); }
+function setMonth(m){ currentMonth=(currentMonth===m)?'all':m; currentCreativeId=null; updateSectionTitle(); renderSidebar(); renderGallery(); }
+function selectCreative(m,id,e){e.stopPropagation();currentCreativeId=String(currentCreativeId)===String(id)?null:id;currentMonth=m;openMonths.add(m);updateSectionTitle();renderSidebar();renderGallery();}
+function setType(type,el){currentType=type;if(type==='all'){currentMonth='all';currentCreativeId=null;currentIndustry='all';currentBrand='all';openMonths.clear();openClients.clear();}document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');updateSectionTitle();renderSidebar();renderGallery();}
+function updateStats(){
+  document.getElementById('stat-total').textContent=creatives.length;
+  document.getElementById('stat-bidding').textContent=creatives.filter(c=>c.type==='bidding').length;
+  document.getElementById('stat-task').textContent=creatives.filter(c=>c.type==='task').length;
+}
+
+function toggleKeyword(btn){ btn.classList.toggle('selected'); }
+
+let newMediaType = 'image';
+let editMediaType = 'image';
+
+function setMediaType(prefix, type) {
+  if (prefix === 'new') newMediaType = type;
+  else editMediaType = type;
+  const imgBtn = document.getElementById(prefix+'-media-img');
+  const vidBtn = document.getElementById(prefix+'-media-vid');
+  const gifBtn = document.getElementById(prefix+'-media-gif');
+  const activeStyle = (color) => `padding:4px 12px;border-radius:999px;border:1.5px solid ${color};background:${color};color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font-sans);`;
+  const inactiveStyle = 'padding:4px 12px;border-radius:999px;border:1.5px solid var(--color-border-tertiary);background:#fff;color:var(--color-text-secondary);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font-sans);';
+  if (imgBtn) imgBtn.style.cssText = type === 'image' ? activeStyle('#111') : inactiveStyle;
+  if (vidBtn) vidBtn.style.cssText = type === 'video' ? activeStyle('#3E64FF') : inactiveStyle;
+  if (gifBtn) gifBtn.style.cssText = type === 'gif' ? activeStyle('#22a87a') : inactiveStyle;
+}
+
+function updateSectionTitle(){const t=currentType==='all'?'전체':currentType==='bidding'?'비딩':'과제';if(currentCreativeId!==null){const c=creatives.find(c=>String(c.id)===String(currentCreativeId));document.getElementById('section-title').textContent=c?c.name:'';}else document.getElementById('section-title').textContent=t+' 소재'+(currentMonth==='all'?'':' · '+formatDate(currentMonth));}
+
+async function cycleStatus(id){
+  const order=['초안','비딩중','진행중','완료'];
+  const c=creatives.find(c=>String(c.id)===String(id));if(!c)return;
+  c.status=order[(order.indexOf(c.status)+1)%order.length];
+  renderSidebar();renderGallery();
+  await apiPost({action:'update',id:String(id),status:c.status});
+  showToast('상태가 변경됐어요');
+}
+
+async function deleteCreative(id){
+  if(!confirm('소재를 삭제할까요?'))return;
+  creatives=creatives.filter(c=>String(c.id)!==String(id));
+  renderSidebar();renderGallery();
+  await apiPost({action:'delete',id:String(id)});
+  showToast('삭제됐어요');
+}
+
+function openDetail(id){
+  const c=creatives.find(c=>String(c.id)===String(id));if(!c)return;
+  document.getElementById('detail-title').textContent=c.name;
+  document.getElementById('detail-body').innerHTML=`
+    <div class="slider-wrap" id="detail-slider"></div>
+    <div class="detail-grid">
+      <div class="detail-field"><label>구분</label><p><span class="type-tag ${c.type==='bidding'?'type-bidding':'type-task'}" style="position:static;display:inline-block;font-size:12px;padding:4px 10px;border-radius:10px">${c.type==='bidding'?'비딩':'과제'}</span></p></div>
+      <div class="detail-field"><label>상태</label><p><span class="${statusColors[c.status]}" style="font-size:12px;font-weight:500;padding:4px 10px;border-radius:10px;display:inline-block">${c.status}</span></p></div>
+      <div class="detail-field"><label>클라이언트</label><p>${c.client}</p></div>
+      <div class="detail-field"><label>프로젝트</label><p>${c.project||'-'}</p></div>
+      <div class="detail-field"><label>제작 연/월</label><p>${formatDate(c.date)}</p></div>
+    </div>
+    <div class="detail-field"><label>소재 사이즈</label><div class="card-size" style="margin-top:6px">${(Array.isArray(c.sizes)?c.sizes:[]).map(s=>`<span class="size-tag">${s}</span>`).join('')}</div></div>
+    <div class="form-actions" style="margin-top:16px">
+      <button class="btn-cancel" onclick="cycleStatus(${c.id});closeModal('detail-modal')">상태 변경</button>
+      <button class="btn-submit" onclick="closeModal('detail-modal')">닫기</button>
+    </div>`;
+  document.getElementById('detail-modal').classList.add('open');
+  const imgs = c.imgs && c.imgs.length ? c.imgs : (c.img ? [c.img] : []);
+  openSlider(imgs, 0);
+}
+
+function openAddModal(){
+  const _now = new Date();
+  const _y = document.getElementById('new-date-year');
+  const _m = document.getElementById('new-date-month');
+  if(_y) _y.value = String(_now.getFullYear());
+  if(_m) _m.value = String(_now.getMonth()+1).padStart(2,'0');
+  ['new-name','new-client'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('new-img-textarea').value='';
+  const newVidEl = document.getElementById('new-vid-textarea'); if(newVidEl) newVidEl.value='';
+  document.querySelectorAll('#new-keyword-chips .keyword-chip').forEach(b=>b.classList.remove('selected'));
+  const indEl=document.getElementById('new-industry'); if(indEl) indEl.value='';
+  const folderEl=document.getElementById('new-folder-url'); if(folderEl) folderEl.value='';
+  document.getElementById('add-modal').classList.add('open');
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+/* 수정 모달 */
+let editImgInputCount = 0;
+let editingId = null;
+
+function addEditImgInput(type='image', value='') {
+  const wrap = document.getElementById('edit-img-inputs');
+  const idx = editImgInputCount++;
+  const isVideo = type === 'video';
+  const row = document.createElement('div');
+  row.className = 'img-input-row';
+  row.id = 'edit-img-row-' + idx;
+  row.dataset.type = type;
+  row.innerHTML = `
+    <span style="font-size:13px;flex-shrink:0;color:var(--color-text-tertiary);width:20px;text-align:center">
+      <i class="ti ${isVideo ? 'ti-video' : 'ti-photo'}"></i>
+    </span>
+    <input type="url" class="form-input" placeholder="${isVideo ? '영상 링크 (Drive·유튜브)' : '이미지 링크 (Drive)'}" id="edit-img-input-${idx}" data-media-type="${type}" value="${value}">
+    <button type="button" class="img-del-btn" onclick="removeEditImgInput(${idx})"><i class="ti ti-x"></i></button>`;
+  wrap.appendChild(row);
+}
+
+function removeEditImgInput(idx) {
+  const el = document.getElementById('edit-img-row-' + idx);
+  if(el) el.remove();
+}
+
+function getEditImgUrls() {
+  const inputs = document.querySelectorAll('#edit-img-inputs input');
+  return Array.from(inputs).map(i => {
+    const url = i.value.trim();
+    if (!url) return null;
+    const isVid = i.dataset.mediaType === 'video';
+    return isVid ? 'video:' + url : convertToDirectUrl(url);
+  }).filter(Boolean);
+}
+
+function openEditModal(id) {
+  const c = creatives.find(c => String(c.id) === String(id));
+  if (!c) return;
+  editingId = id;
+
+  // 기존 이미지 목록을 이미지/영상으로 분류
+  const imgs = c.imgs && c.imgs.length ? c.imgs : (c.img ? [c.img] : []);
+  const imgLinks = imgs.filter(u => !isVideoUrl(u) && !isGifUrl(u)).map(u => getRealUrl(u));
+  const vidLinks = imgs.filter(u => isVideoUrl(u) || isGifUrl(u)).map(u => getRealUrl(u));
+  document.getElementById('edit-img-textarea').value = imgLinks.join('\n');
+  const editVidEl = document.getElementById('edit-vid-textarea');
+  if (editVidEl) editVidEl.value = vidLinks.join('\n');
+
+  document.getElementById('edit-name').value = c.name || '';
+  document.getElementById('edit-client').value = c.client || '';
+  document.getElementById('edit-type').value = c.type || 'bidding';
+  const editIndEl = document.getElementById('edit-industry');
+  if(editIndEl) editIndEl.value = c.industry || '';
+  const _ed = (c.date||'').split('-');
+  const _ey = document.getElementById('edit-date-year');
+  const _em = document.getElementById('edit-date-month');
+  if(_ey && _ed[0]) _ey.value = _ed[0];
+  if(_em && _ed[1]) _em.value = _ed[1];
+  document.querySelectorAll('#edit-keyword-chips .keyword-chip').forEach(b=>{
+    b.classList.toggle('selected',(c.keywords||[]).includes(b.textContent.trim()));
+  });
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+async function saveEdit() {
+  const name = document.getElementById('edit-name').value.trim();
+  const client = document.getElementById('edit-client').value.trim();
+  if (!name || !client) { showToast('소재명과 클라이언트를 입력해주세요'); return; }
+
+  const editImgRaw = document.getElementById('edit-img-textarea').value.trim();
+  const editVidRaw = (document.getElementById('edit-vid-textarea')||{value:''}).value.trim();
+  const imgImgs = editImgRaw ? editImgRaw.split(/\n+/).map(u=>u.trim()).filter(Boolean).map(u=>convertToDirectUrl(u)) : [];
+  const vidImgs = editVidRaw ? editVidRaw.split(/\n+/).map(u=>u.trim()).filter(Boolean).map(u=>{
+    const raw = u.startsWith('video:') ? u.slice(6) : u.startsWith('gif:') ? u.slice(4) : u;
+    if (isGifUrl(u)) return convertGifUrl(raw);
+    return 'video:' + raw;
+  }) : [];
+  const imgs = [...imgImgs, ...vidImgs];
+  const type = document.getElementById('edit-type').value;
+  const industry = document.getElementById('edit-industry')?document.getElementById('edit-industry').value:'';
+  const _saveY = document.getElementById('edit-date-year').value;
+  const _saveM = document.getElementById('edit-date-month').value;
+  const date = (_saveY && _saveM) ? `${_saveY}-${_saveM}` : '';
+
+  const idx = creatives.findIndex(c => String(c.id) === String(editingId));
+  if (idx === -1) return;
+
+  const editKw = [...document.querySelectorAll('#edit-keyword-chips .keyword-chip.selected')].map(b=>b.textContent.trim());
+  creatives[idx] = { ...creatives[idx], name, client, type, industry, date, imgs, img: imgs[0] || '', keywords: editKw };
+
+  closeModal('edit-modal');
+  renderSidebar(); renderGallery();
+
+  await apiPost({ action: 'update_all', id: String(editingId), data: { ...creatives[idx], keywords: creatives[idx].keywords.join(','), imgs: imgs.join('|') } });
+  showToast('수정됐어요 ✅');
+}
+
+/* 카드 클릭 핸들러 */
+function handleCardClick(id) {
+  const c = creatives.find(c => String(c.id) === String(id));
+  if (!c) return;
+  const imgs = c.imgs && c.imgs.length ? c.imgs : (c.img ? [c.img] : []);
+  const onlyImgs = imgs.filter(u => !isVideoUrl(u));
+  const onlyVids = imgs.filter(u => isVideoUrl(u));
+
+  if (onlyVids.length > 0 && onlyImgs.length === 0) {
+    // 영상만
+    openVideoModal(onlyVids[0]);
+  } else if (onlyImgs.length > 0 && onlyVids.length === 0) {
+    // 이미지만 (단일 or 캐러셀)
+    openImgModal(onlyImgs, 0);
+  } else {
+    // 혼합
+    openDetail(id);
+  }
+}
+
+/* 이미지 확대 모달 */
+let imgModalImgs = [];
+let imgModalIdx = 0;
+
+function openImgModal(imgs, startIdx=0) {
+  imgModalImgs = imgs;
+  imgModalIdx = startIdx;
+  document.getElementById('img-modal').classList.add('open');
+  renderImgModal();
+}
+
+function getOriginalDriveUrl(url) {
+  if (!url) return null;
+  // gif: prefix
+  if (url.startsWith('gif:')) return `https://drive.google.com/file/d/${url.slice(4)}/view`;
+  // lh3 googleusercontent with file ID
+  const lh3Match = url.match(/lh3\.googleusercontent\.com\/d\/([a-zA-Z0-9_-]+)/);
+  if (lh3Match) return `https://drive.google.com/file/d/${lh3Match[1]}/view`;
+  // drive.google.com/uc?id=...
+  const ucMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (ucMatch) return `https://drive.google.com/file/d/${ucMatch[1]}/view`;
+  // drive.google.com/file/d/...
+  const fileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (fileMatch) return `https://drive.google.com/file/d/${fileMatch[1]}/view`;
+  return null;
+}
+
+function renderImgModal() {
+  const url = imgModalImgs[imgModalIdx] || '';
+  const showBtns = imgModalImgs.length > 1;
+  const dots = imgModalImgs.map((_,i) =>
+    `<div class="img-modal-dot ${i===imgModalIdx?'active':''}" onclick="goImgModal(${i})"></div>`
+  ).join('');
+  const originalUrl = getOriginalDriveUrl(url);
+  const linkBtn = originalUrl
+    ? `<a href="${originalUrl}" target="_blank" rel="noopener" title="원본 파일 열기"
+        style="position:absolute;top:10px;right:10px;z-index:4;width:40px;height:40px;border-radius:50%;
+               background:rgba(255,255,255,0.15);backdrop-filter:blur(12px) saturate(180%);
+               -webkit-backdrop-filter:blur(12px) saturate(180%);border:1px solid rgba(255,255,255,0.3);
+               box-shadow:0 2px 8px rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;
+               color:#fff;font-size:18px;text-decoration:none;transition:all 0.15s;"
+        onmouseover="this.style.background='rgba(255,255,255,0.28)'"
+        onmouseout="this.style.background='rgba(255,255,255,0.15)'">
+        <i class="ti ti-external-link"></i>
+      </a>`
+    : '';
+  document.getElementById('img-modal-inner').innerHTML = `
+    <img src="${url}" alt="소재 이미지" style="width:100%;height:100%;object-fit:contain">
+    ${linkBtn}
+    ${showBtns ? `<button class="img-modal-btn img-modal-prev" onclick="goImgModal(${imgModalIdx-1})"><i class="ti ti-chevron-left"></i></button>` : ''}
+    ${showBtns ? `<button class="img-modal-btn img-modal-next" onclick="goImgModal(${imgModalIdx+1})"><i class="ti ti-chevron-right"></i></button>` : ''}
+    ${showBtns ? `<div class="img-modal-dots">${dots}</div>` : ''}
+  `;
+}
+
+function goImgModal(idx) {
+  imgModalIdx = (idx + imgModalImgs.length) % imgModalImgs.length;
+  renderImgModal();
+}
+
+function closeImgModal(e) {
+  if(e.target === document.getElementById('img-modal')) closeImgModalDirect();
+}
+function closeImgModalDirect() {
+  document.getElementById('img-modal').classList.remove('open');
+  document.getElementById('img-modal-inner').innerHTML = '';
+}
+
+function openVideoModal(url) {
+  const realUrl = getRealUrl(url);
+  const embedUrl = getVideoEmbedUrl(realUrl);
+  const inner = document.getElementById('video-modal-inner');
+  inner.style.cssText = 'width:min(90vw,700px);aspect-ratio:1/1;background:#000;border-radius:12px;overflow:hidden;position:relative;';
+  inner.innerHTML = `<iframe src="${embedUrl}" allowfullscreen allow="autoplay; encrypted-media; fullscreen" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" style="width:100%;height:100%;border:none;"></iframe>`;
+  document.getElementById('video-modal').classList.add('open');
+}
+function closeVideoModal(e) {
+  if(e.target === document.getElementById('video-modal')) closeVideoModalDirect();
+}
+function closeVideoModalDirect() {
+  document.getElementById('video-modal').classList.remove('open');
+  document.getElementById('video-modal-inner').innerHTML = '';
+}
+
+async function addCreative(){
+  const name=document.getElementById('new-name').value.trim();
+  const client=document.getElementById('new-client').value.trim();
+  const imgRaw = document.getElementById('new-img-textarea').value.trim();
+  const vidRaw = document.getElementById('new-vid-textarea').value.trim();
+  if(!imgRaw && !vidRaw){showToast('소재 링크를 입력해주세요');return;}
+  // 이미지 링크 처리
+  const imgImgs = imgRaw ? imgRaw.split(/\n+/).map(u=>u.trim()).filter(Boolean).map(u=>convertToDirectUrl(u)) : [];
+  // 영상·GIF 링크 처리: 확장자로 GIF 판별, 나머지는 video:
+  const vidImgs = vidRaw ? vidRaw.split(/\n+/).map(u=>u.trim()).filter(Boolean).map(u=>{
+    const raw = u.startsWith('video:') ? u.slice(6) : u.startsWith('gif:') ? u.slice(4) : u;
+    if (isGifUrl(u)) return convertGifUrl(raw);
+    return 'video:' + raw;
+  }) : [];
+  const imgs = [...imgImgs, ...vidImgs];
+  if(!name||!client){showToast('소재명과 클라이언트를 입력해주세요');return;}
+  const type=document.getElementById('new-type').value;
+  const industry=document.getElementById('new-industry')?document.getElementById('new-industry').value:'';
+  const _addY = document.getElementById('new-date-year').value;
+  const _addM = document.getElementById('new-date-month').value;
+  const date = (_addY && _addM) ? `${_addY}-${_addM}` : new Date().toISOString().slice(0,7);
+  const bg=bgColors[nextId%bgColors.length];
+  const newItem={id:nextId++,name,client,project:'',type,industry,status:'초안',emoji:'🖼️',bg,date,img:imgs[0],imgs};
+  creatives.unshift(newItem);
+  closeModal('add-modal');renderSidebar();renderGallery();
+  await apiPost({action:'add',data:{...newItem,imgs:imgs.join('|')}});
+  showToast('소재가 추가됐어요 🎉');
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('keydown', e => {
+    if(e.key!=='Escape') return;
+    ['add-modal','edit-modal','detail-modal'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el&&el.classList.contains('open')) closeModal(id);
+    });
+  });
+  ['add-modal','edit-modal','detail-modal'].forEach(id=>{
+    const overlay = document.getElementById(id);
+    if(!overlay) return;
+    overlay.addEventListener('click', e=>{ if(e.target===overlay) closeModal(id); });
+    const inner = overlay.querySelector('.modal');
+    if(inner) inner.addEventListener('click', e=>e.stopPropagation());
+  });
+  apiGet().then(()=>{renderSidebar();renderGallery();updateStats();});
+});
+</script>
+
+<!-- 소재 수정 모달 -->
+<div class="modal-overlay" id="edit-modal" onclick="if(event.target===this)closeModal('edit-modal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span class="modal-title">소재 수정</span>
+      <button class="modal-close" onclick="closeModal('edit-modal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">🖼️ 이미지 링크 <span style="font-weight:400;color:var(--color-text-tertiary)">(여러 개는 줄바꿈으로 구분, 캐러셀 등록)</span></label>
+        <textarea class="form-input" id="edit-img-textarea" rows="3" style="resize:vertical;line-height:1.6;font-size:12px;" placeholder="Google Drive 이미지 링크를 붙여넣어 주세요."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">🎬 영상·GIF 링크 <span style="font-weight:400;color:var(--color-text-tertiary)">(Drive 영상 또는 GIF 링크)</span></label>
+        <textarea class="form-input" id="edit-vid-textarea" rows="2" style="resize:vertical;line-height:1.6;font-size:12px;" placeholder="Google Drive 영상/GIF 링크를 붙여넣어 주세요."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">클라이언트 *</label><input type="text" class="form-input" id="edit-client" placeholder="클라이언트명"></div>
+        <div class="form-group"><label class="form-label">구분</label><select class="form-select" id="edit-type"><option value="bidding">비딩</option><option value="task">과제</option></select></div>
+      </div>
+      <div class="form-group"><label class="form-label">소재명 *</label><input type="text" class="form-input" id="edit-name" placeholder="예: 여름 프로모션 배너 A"></div>
+      <div class="form-group"><label class="form-label">카테고리</label><select class="form-select" id="edit-industry"><option value="">선택 안함</option><option value="beauty">💄 Beauty &amp; Luxury</option><option value="fnb">🍽️ F&amp;B</option><option value="ecommerce">🛍️ Ecommerce</option><option value="game">🎮 Gaming</option><option value="telecom">📡 Telecom</option><option value="entmedia">🎬 Ent. &amp; Media</option><option value="tech">💻 Technology</option><option value="edu">📚 Education</option><option value="sports">⚽ Sports</option><option value="auto">🚗 Automotive</option><option value="health">🏥 Health Care</option><option value="travel">✈️ Travel</option><option value="retail">🏪 Retail</option><option value="org">🏛️ Organizations</option><option value="finance">💰 Financial Services</option><option value="service">🔧 Service</option></select></div>
+      <div class="form-group"><label class="form-label">제작 연/월</label><div style="display:flex;gap:8px;align-items:center;">
+          <select class="form-select" id="edit-date-year" style="flex:1"><option value="2026">2026년</option><option value="2027">2027년</option><option value="2028">2028년</option><option value="2029">2029년</option><option value="2030">2030년</option><option value="2031">2031년</option><option value="2032">2032년</option><option value="2033">2033년</option><option value="2034">2034년</option><option value="2035">2035년</option><option value="2036">2036년</option><option value="2037">2037년</option><option value="2038">2038년</option><option value="2039">2039년</option><option value="2040">2040년</option><option value="2041">2041년</option><option value="2042">2042년</option><option value="2043">2043년</option><option value="2044">2044년</option><option value="2045">2045년</option><option value="2046">2046년</option><option value="2047">2047년</option><option value="2048">2048년</option><option value="2049">2049년</option><option value="2050">2050년</option></select>
+          <select class="form-select" id="edit-date-month" style="flex:1"><option value="01">1월</option><option value="02">2월</option><option value="03">3월</option><option value="04">4월</option><option value="05">5월</option><option value="06">6월</option><option value="07">7월</option><option value="08">8월</option><option value="09">9월</option><option value="10">10월</option><option value="11">11월</option><option value="12">12월</option></select>
+        </div></div>
+      <div class="form-group">
+        <label class="form-label">키워드</label>
+        <div class="keyword-chips" id="edit-keyword-chips">
+          
+          <button type="button" class="keyword-chip" onclick="event.stopPropagation();toggleKeyword(this)">쿠폰강조</button>
+          <button type="button" class="keyword-chip" onclick="event.stopPropagation();toggleKeyword(this)">모델/제품강조</button>
+          <button type="button" class="keyword-chip" onclick="event.stopPropagation();toggleKeyword(this)">타이포강조</button>
+          <button type="button" class="keyword-chip" onclick="event.stopPropagation();toggleKeyword(this)">할인/가격강조</button>
+          <button type="button" class="keyword-chip" onclick="event.stopPropagation();toggleKeyword(this)">리뷰강조</button>
+          <button type="button" class="keyword-chip" onclick="event.stopPropagation();toggleKeyword(this)">USP강조</button>
+          <button type="button" class="keyword-chip" onclick="event.stopPropagation();toggleKeyword(this)">AI활용</button>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-cancel" onclick="closeModal('edit-modal')">취소</button>
+        <button class="btn-submit" onclick="saveEdit()">저장하기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 이미지 확대 모달
+<!-- 이미지 확대 모달 -->
+<div class="img-modal-overlay" id="img-modal" onclick="closeImgModal(event)">
+  <div class="img-modal-close" onclick="closeImgModalDirect()"><i class="ti ti-x"></i></div>
+  <div class="img-modal-inner" id="img-modal-inner"></div>
+</div>
+
+<!-- 영상 재생 모달 -->
+<div class="video-modal-overlay" id="video-modal" onclick="closeVideoModal(event)">
+  <div style="position:relative;max-width:min(90vw,900px);">
+    <button onclick="closeVideoModalDirect()" style="position:absolute;top:-48px;right:0;background:rgba(255,255,255,0.15);backdrop-filter:blur(12px) saturate(180%);-webkit-backdrop-filter:blur(12px) saturate(180%);border:1px solid rgba(255,255,255,0.3);box-shadow:0 2px 8px rgba(0,0,0,0.1);color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;z-index:10;"><i class="ti ti-x"></i></button>
+    <div class="video-modal-inner" id="video-modal-inner"></div>
+  </div>
+</div>
+</body>
+</html>
